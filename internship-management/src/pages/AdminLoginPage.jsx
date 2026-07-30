@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
 
 function AdminLoginPage() {
   const navigate = useNavigate();
@@ -9,38 +9,42 @@ function AdminLoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
-    try {
-      setLoading(true);
-      setError("");
+  const handleLogin = () => {
+  setLoading(true);
+  setError("");
 
-      // ================= VALIDATION =================
-      if (!email || !password) {
-        setLoading(false);
-        return setError("Email and password required");
-      }
+  // Validation
+  if (!email || !password) {
+    setLoading(false);
+    return setError("Email and password required");
+  }
 
-      // ================= API CALL =================
-      const res = await axios.post("http://localhost:5000/api/admin/login", {
-        email,
-        password,
-      });
+  // Hardcoded Admin Login
+  if (
+    email === "admin@gmail.com" &&
+    password === "admin123"
+  ) {
+    // Save admin session
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        role: "admin",
+        email: "admin@gmail.com",
+        name: "Administrator",
+      })
+    );
 
-      const { token, user } = res.data;
+    localStorage.setItem("token", "admin-demo-token");
 
-      // ================= SAVE SESSION =================
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+    setLoading(false);
 
-      // ================= REDIRECT =================
-      navigate("/admin");
-
-    } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Redirect to Admin Dashboard
+    navigate("/admin");
+  } else {
+    setLoading(false);
+    setError("Invalid admin email or password");
+  }
+};
 
   return (
     <div style={styles.page}>
