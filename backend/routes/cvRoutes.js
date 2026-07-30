@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const CV = require("../models/CV");
 
-const { v4: uuidv4 } = require("uuid");
+const crypto = require("crypto");
 const upload = require("../middleware/upload"); // shared Cloudinary middleware
 
 // =====================
@@ -115,7 +115,7 @@ router.post("/share/:id", async (req, res) => {
     }
 
     if (!cv.shareToken) {
-      cv.shareToken = uuidv4();
+      cv.shareToken = crypto.randomUUID();
     }
 
     cv.isPublic = true;
