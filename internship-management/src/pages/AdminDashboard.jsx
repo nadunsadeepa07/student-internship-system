@@ -8,7 +8,7 @@ const getToken = () =>
 
 const createApi = () =>
   axios.create({
-    baseURL: "http://localhost:5000/api/admin",
+    baseURL: "http://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/admin",
     headers: { Authorization: `Bearer ${getToken()}` },
   });
 
@@ -98,7 +98,7 @@ export default function AdminDashboard() {
   const fetchJobs = async () => {
   try {
     const res = await axios.get(
-      "http://localhost:5000/api/jobs"
+      "https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/jobs"
     );
 
     setJobs(res.data || []);
@@ -132,8 +132,8 @@ const fetchRegisteredUsers = async () => {
     };
 
     const [studentRes, companyRes] = await Promise.all([
-      axios.get("http://localhost:5000/api/admin/students", config),
-      axios.get("http://localhost:5000/api/admin/companies", config),
+      axios.get("https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/admin/students", config),
+      axios.get("https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/admin/companies", config),
     ]);
 
     setRegisteredStudents(studentRes.data || []);
@@ -390,7 +390,7 @@ const fetchRegisteredUsers = async () => {
   try {
 
     await axios.delete(
-      `http://localhost:5000/api/jobs/${id}`
+      `https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/jobs/${id}`
     );
 
     showToast(
@@ -411,7 +411,7 @@ const fetchRegisteredUsers = async () => {
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     const res = await axios.put(
-      `http://localhost:5000/api/admin/block-student/${id}`,
+      `https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/admin/block-student/${id}`,
       {},
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -429,7 +429,7 @@ const unblockStudent = async (id) => {
   try {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     await axios.put(
-      `http://localhost:5000/api/admin/unblock-student/${id}`,
+      `https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/admin/unblock-student/${id}`,
       {},
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -451,7 +451,7 @@ const blockCompany = async (id) => {
   sessionStorage.getItem("token");
 
     await axios.put(
-      `http://localhost:5000/api/admin/block-company/${id}`,
+      `https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/admin/block-company/${id}`,
       {},
       {
         headers: {
@@ -476,7 +476,7 @@ const unblockCompany = async (id) => {
       sessionStorage.getItem("token");
 
     await axios.put(
-      `http://localhost:5000/api/admin/unblock-company/${id}`,
+      `https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/admin/unblock-company/${id}`,
       {},
       {
         headers: {
@@ -510,7 +510,7 @@ const removeStudent = async (id) => {
   sessionStorage.getItem("token");
 
     await axios.delete(
-      `http://localhost:5000/api/admin/student/${id}`,
+      `https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/admin/student/${id}`,
       {
         headers: {
           Authorization:
@@ -542,7 +542,7 @@ const removeCompany = async (id) => {
   sessionStorage.getItem("token");
 
     await axios.delete(
-      `http://localhost:5000/api/admin/company/${id}`,
+      `https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/admin/company/${id}`,
       {
         headers: {
           Authorization:

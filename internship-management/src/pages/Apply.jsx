@@ -40,7 +40,7 @@ function Apply() {
   useEffect(() => {
     if (jobId) {
       axios
-        .get(`http://localhost:5000/api/jobs/${jobId}`)
+        .get(`https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/jobs/${jobId}`)
         .then((res) => setJobDetails(res.data))
         .catch((err) => console.log(err));
     }
@@ -135,7 +135,7 @@ function Apply() {
   formData.append("studentId", user._id);
 
   await axios.post(
-    `http://localhost:5000/api/applications/${jobId}`,
+    `https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/applications/${jobId}`,
     formData
   );
 
