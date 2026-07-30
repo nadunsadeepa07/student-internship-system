@@ -8,7 +8,7 @@ const getToken = () =>
 
 const createApi = () =>
   axios.create({
-    baseURL: "http://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/admin",
+    baseURL: "https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/admin",
     headers: { Authorization: `Bearer ${getToken()}` },
   });
 
