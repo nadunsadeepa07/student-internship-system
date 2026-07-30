@@ -2,25 +2,8 @@ const express = require("express");
 const router = express.Router();
 const CV = require("../models/CV");
 
-const multer = require("multer");
-
 const { v4: uuidv4 } = require("uuid");
-
-// =====================
-// MULTER STORAGE
-// =====================
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-
-const upload = multer({ storage });
+const upload = require("../middleware/upload"); // shared Cloudinary middleware
 
 // =====================
 // IMAGE UPLOAD
@@ -32,8 +15,7 @@ router.post(
   (req, res) => {
     try {
       res.json({
-        imageUrl:
-          `http://localhost:5000/uploads/${req.file.filename}`,
+        imageUrl: req.file.path, // Cloudinary URL දැනටමත් මෙතන ඇතුළත්
       });
     } catch (err) {
       res.status(500).json({
@@ -139,8 +121,7 @@ router.post("/share/:id", async (req, res) => {
     cv.isPublic = true;
     await cv.save();
 
-    const shareUrl =
-      `http://localhost:3000/shared-cv/${cv.shareToken}`;
+    const shareUrl = `${process.env.CLIENT_URL}/shared-cv/${cv.shareToken}`;
 
     res.json({ shareUrl });
 

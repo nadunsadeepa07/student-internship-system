@@ -58,8 +58,7 @@ router.post(
             req.body.skills
           ),
 
-          resume:
-            req.file?.filename,
+          resume: req.file?.path,
         });
 
       await application.save();
