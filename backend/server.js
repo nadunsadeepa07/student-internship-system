@@ -4,18 +4,11 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const path = require("path");
 
-
 dotenv.config();
 
 /* =========================================
    ENVIRONMENT VARIABLES
 ========================================= */
-
-
-
-const CLIENT_URL =
-  process.env.CLIENT_URL ||
-  "http://localhost:3000";
 
 const MONGO_URI =
   process.env.MONGO_URI ||
@@ -27,55 +20,84 @@ const MONGO_URI =
 
 const app = express();
 
-
-
-
 /* =========================================
    ROUTES
 ========================================= */
 
-const authRoutes =
-  require("./routes/authRoutes");
+const authRoutes = require("./routes/authRoutes");
+const jobRoutes = require("./routes/jobRoutes");
+const commentRoutes = require("./routes/commentRoutes");
+const cvRoutes = require("./routes/cvRoutes");
 
-const jobRoutes =
-  require("./routes/jobRoutes");
+const adminAuthRoutes = require("./routes/adminAuthRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
-const commentRoutes =
-  require("./routes/commentRoutes");
-
-const cvRoutes =
-  require("./routes/cvRoutes");
-
-
-
-const adminAuthRoutes =
-  require("./routes/adminAuthRoutes");
-
-const adminRoutes =
-  require("./routes/adminRoutes");
-
-const applicationRoutes =
-  require("./routes/applicationRoutes");
-
-const studentRoutes =
-  require("./routes/studentRoutes");
-
-const companyRoutes =
-  require("./routes/companyRoutes");
-
-const paymentRoutes =
-  require("./routes/paymentRoutes");
+const applicationRoutes = require("./routes/applicationRoutes");
+const studentRoutes = require("./routes/studentRoutes");
+const companyRoutes = require("./routes/companyRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 /* =========================================
-   MIDDLEWARE
+   CORS
 ========================================= */
+
+const allowedOrigins = [
+  "http://localhost:3000",
+
+  // Production Frontend
+  "https://student-internship-system-ta8h.vercel.app",
+
+  // If you later use the default Vercel domain
+  "https://student-internship-system.vercel.app",
+];
 
 app.use(
   cors({
-    origin: CLIENT_URL,
+    origin: function (origin, callback) {
+
+      // Postman / Server-to-server requests
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      console.log("Blocked Origin:", origin);
+
+      return callback(
+        new Error("Not allowed by CORS")
+      );
+    },
+
     credentials: true,
+
+    methods: [
+      "GET",
+      "POST",
+      "PUT",
+      "PATCH",
+      "DELETE",
+      "OPTIONS",
+    ],
+
+    allowedHeaders: [
+      "Origin",
+      "X-Requested-With",
+      "Content-Type",
+      "Accept",
+      "Authorization",
+    ],
   })
 );
+
+// Handle Preflight Requests
+app.options("*", cors());
+
+/* =========================================
+   BODY PARSER
+========================================= */
 
 app.use(express.json());
 
@@ -89,12 +111,6 @@ app.use(
    STATIC FILES
 ========================================= */
 
-/*
-  backend/uploads folder එක public කරනවා.
-
-  Example:
-  http://localhost:5000/uploads/image.jpg
-*/
 app.use(
   "/uploads",
   express.static(
@@ -103,129 +119,72 @@ app.use(
 );
 
 /* =========================================
-   PAYMENT ROUTES
-========================================= */
-
-app.use(
-  "/api/payment",
-  paymentRoutes
-);
-
-/* =========================================
    API ROUTES
 ========================================= */
 
-app.use(
-  "/api",
-  authRoutes
-);
+app.use("/api", authRoutes);
 
-app.use(
-  "/api/jobs",
-  jobRoutes
-);
+app.use("/api/jobs", jobRoutes);
 
-app.use(
-  "/api/comments",
-  commentRoutes
-);
+app.use("/api/comments", commentRoutes);
 
-app.use(
-  "/api/cv",
-  cvRoutes
-);
+app.use("/api/cv", cvRoutes);
 
-/*
-  chatRoutes.js එකේ:
+app.use("/api/payment", paymentRoutes);
 
-  router.get("/messages")
-  router.post("/upload")
+app.use("/api/admin", adminAuthRoutes);
 
-  Final URLs:
+app.use("/api/admin", adminRoutes);
 
-  GET  /api/chat/messages
-  POST /api/chat/upload
-*/
+app.use("/api/applications", applicationRoutes);
 
+app.use("/api/student", studentRoutes);
 
-app.use(
-  "/api/admin",
-  adminAuthRoutes
-);
-
-app.use(
-  "/api/admin",
-  adminRoutes
-);
-
-app.use(
-  "/api/applications",
-  applicationRoutes
-);
-
-app.use(
-  "/api/student",
-  studentRoutes
-);
-
-app.use(
-  "/api/company",
-  companyRoutes
-);
+app.use("/api/company", companyRoutes);
 
 /* =========================================
-   TEST ROUTE
+   HOME ROUTE
 ========================================= */
 
 app.get("/", (req, res) => {
-  res.send(
-    "Internship Management System API Running"
-  );
+  res.send("Internship Management System API Running");
 });
 
 /* =========================================
-   404 HANDLER
+   404
 ========================================= */
 
-
 app.use((req, res) => {
-  return res.status(404).json({
-    message:
-      `Route not found: ` +
-      `${req.method} ${req.originalUrl}`,
+  res.status(404).json({
+    message: `Route not found: ${req.method} ${req.originalUrl}`,
   });
 });
 
 /* =========================================
-   GLOBAL ERROR HANDLER
+   ERROR HANDLER
 ========================================= */
 
 app.use((err, req, res, next) => {
-  console.error(
-    "Global server error:",
-    err
-  );
 
-  return res.status(500).json({
-    message: "Internal server error.",
+  console.error(err);
+
+  res.status(500).json({
+    message: err.message || "Internal Server Error",
   });
+
 });
 
-
-
 /* =========================================
-   MONGODB CONNECTION
+   DATABASE
 ========================================= */
 
-if (mongoose.connection.readyState === 0) {
-  mongoose
-    .connect(MONGO_URI)
-    .then(() => {
-      console.log("MongoDB Connected");
-    })
-    .catch((err) => {
-      console.error("MongoDB connection error:", err);
-    });
-}
+mongoose
+  .connect(MONGO_URI)
+  .then(() => {
+    console.log("✅ MongoDB Connected");
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB Error:", err);
+  });
 
-   module.exports = app;
+module.exports = app;
