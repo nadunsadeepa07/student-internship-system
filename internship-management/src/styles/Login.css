@@ -628,3 +628,267 @@
     height: 50px;
   }
 }
+
+/* =======================================================
+   MOBILE RESPONSIVE DESIGN
+   Add this at the END of Login.css
+======================================================= */
+
+/* Tablet */
+@media screen and (max-width: 768px) {
+
+  .login-page{
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    transform:none;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:12px;
+  }
+
+  .main-card{
+    width:100%;
+    max-width:100%;
+    height:auto;
+    max-height:95vh;
+    border-radius:18px;
+    flex-direction:column;
+    overflow-y:auto;
+  }
+
+  .login-card,
+  .register-card{
+    height:auto;
+  }
+
+  /* Hide Image Section */
+  .left-side{
+    display:none;
+  }
+
+  .right-side{
+    width:100%;
+    padding:25px 20px;
+  }
+
+  .header{
+    text-align:center;
+    margin-bottom:20px;
+  }
+
+  .header h1{
+    font-size:24px;
+  }
+
+  .header p{
+    font-size:14px;
+  }
+
+  .input-row{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+  }
+
+  .input-group input,
+  .input-group select{
+    font-size:15px;
+    padding:14px;
+  }
+
+  .password-box input{
+    padding-right:48px;
+  }
+
+  .remember-forgot{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+
+  .auth-btn{
+    width:100%;
+    padding:15px;
+    font-size:16px;
+  }
+
+  .switch-text{
+    text-align:center;
+    font-size:14px;
+  }
+
+  .top-close{
+    width:36px;
+    height:36px;
+    top:12px;
+    right:12px;
+  }
+
+  .role-box{
+    width:95%;
+    max-width:420px;
+    padding:25px;
+  }
+
+  .role-buttons{
+    gap:12px;
+  }
+
+  .role-btn{
+    padding:16px;
+  }
+
+  .role-icon{
+    width:50px;
+    height:50px;
+    min-width:50px;
+    font-size:28px;
+  }
+
+}
+
+/* Mobile */
+@media screen and (max-width:480px){
+
+  .login-page{
+    padding:8px;
+  }
+
+  .main-card{
+    border-radius:15px;
+  }
+
+  .right-side{
+    padding:20px 16px;
+  }
+
+  .header h1{
+    font-size:21px;
+  }
+
+  .header p{
+    font-size:13px;
+  }
+
+  .role-badge{
+    font-size:12px;
+    padding:6px 14px;
+  }
+
+  .input-group label{
+    font-size:13px;
+  }
+
+  .input-group input,
+  .input-group select{
+    font-size:14px;
+    padding:13px;
+  }
+
+  .password-box input{
+    padding-right:45px;
+  }
+
+  .toggle-pass{
+    right:14px;
+  }
+
+  .auth-btn{
+    font-size:15px;
+    padding:14px;
+  }
+
+  .switch-text{
+    font-size:13px;
+  }
+
+  .remember-box{
+    font-size:13px;
+  }
+
+  .forgot-link{
+    font-size:13px;
+  }
+
+  .error-box{
+    font-size:13px;
+    padding:10px 12px;
+  }
+
+  .role-box{
+    padding:20px;
+    border-radius:16px;
+  }
+
+  .role-box h2{
+    font-size:22px;
+  }
+
+  .role-subtitle{
+    font-size:13px;
+  }
+
+  .role-btn{
+    gap:12px;
+    padding:14px;
+  }
+
+  .role-icon{
+    width:45px;
+    height:45px;
+    min-width:45px;
+    font-size:24px;
+  }
+
+  .role-info h3{
+    font-size:16px;
+  }
+
+  .role-info p{
+    font-size:12px;
+  }
+
+}
+
+/* Small Phones */
+@media screen and (max-width:360px){
+
+  .right-side{
+    padding:16px 12px;
+  }
+
+  .header h1{
+    font-size:18px;
+  }
+
+  .input-group input,
+  .input-group select{
+    font-size:13px;
+    padding:12px;
+  }
+
+  .auth-btn{
+    font-size:14px;
+    padding:13px;
+  }
+
+  .switch-text{
+    font-size:12px;
+  }
+
+  .remember-box{
+    font-size:12px;
+  }
+
+  .forgot-link{
+    font-size:12px;
+  }
+
+  .role-box{
+    padding:18px;
+  }
+
+}
