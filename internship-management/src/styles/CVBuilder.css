@@ -285,14 +285,16 @@ body {
 /* FIX: Original CSS had width:56px; height:56px; border-radius:60% on .save-btn
    which made it a circle. Now we keep it a normal button. */
 .cv-btn.save-btn {
-  background: var(--cv-primary);
-  color: #fff;
-  border-color: var(--cv-primary);
+  background: #d5a406;
+  color: #000000;
+  border-color: #ffffff;
+  border-radius: 70%;
 }
 
 .cv-btn.save-btn:hover {
-  background: var(--cv-primary-dark);
-  border-color: var(--cv-primary-dark);
+  background: #d5a406;
+  color: #fefefe;
+  border-color: #ffffff;
 }
 
 .cv-btn.download-btn {

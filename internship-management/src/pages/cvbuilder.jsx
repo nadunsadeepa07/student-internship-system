@@ -1493,7 +1493,7 @@ export default function CVBuilder() {
               </>
             ) : (
               <>
-                <Download size={16} /> Download PDF
+                <Download size={16} /> 
               </>
             )}
           </button>
