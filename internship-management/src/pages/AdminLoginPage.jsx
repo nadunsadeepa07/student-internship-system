@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
 
 function AdminLoginPage() {
   const navigate = useNavigate();
@@ -9,42 +9,37 @@ function AdminLoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-  setLoading(true);
-  setError("");
+  const handleLogin = async () => {
+    setLoading(true);
+    setError("");
 
-  // Validation
-  if (!email || !password) {
-    setLoading(false);
-    return setError("Email and password required");
-  }
+    // Validation
+    if (!email || !password) {
+      setLoading(false);
+      return setError("Email and password required");
+    }
 
-  // Hardcoded Admin Login
-  if (
-    email === "admin@gmail.com" &&
-    password === "admin123"
-  ) {
-    // Save admin session
-    localStorage.setItem(
-      "user",
-      JSON.stringify({
-        role: "admin",
-        email: "admin@gmail.com",
-        name: "Administrator",
-      })
-    );
+    try {
+      const res = await axios.post(
+        "https://student-internship-system.vercel.app/api/admin/login",
+        { email, password }
+      );
 
-    localStorage.setItem("token", "admin-demo-token");
+      // Save real JWT + user info returned by the backend
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
-    setLoading(false);
+      setLoading(false);
 
-    // Redirect to Admin Dashboard
-    navigate("/admin");
-  } else {
-    setLoading(false);
-    setError("Invalid admin email or password");
-  }
-};
+      // Redirect to Admin Dashboard
+      navigate("/admin");
+    } catch (err) {
+      setLoading(false);
+      setError(
+        err.response?.data?.message || "Invalid admin email or password"
+      );
+    }
+  };
 
   return (
     <div style={styles.page}>

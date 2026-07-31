@@ -3,10 +3,13 @@ const bcrypt = require("bcryptjs");
 const Admin = require("../models/Admin");
 require("dotenv").config();
 
+const MONGO_URI =
+  process.env.MONGO_URI || "mongodb://127.0.0.1:27017/internshipDB";
+
 const createAdmin = async () => {
   try {
-    // 1. Database connect කරනවා
-    await mongoose.connect("mongodb://127.0.0.1:27017/internshipDB");
+    // 1. Database connect කරනවා (Atlas, using .env MONGO_URI)
+    await mongoose.connect(MONGO_URI);
     console.log("MongoDB connected");
 
     // 2. Already admin එකක් තියෙනවද check කරනවා
@@ -29,9 +32,8 @@ const createAdmin = async () => {
 
     console.log("✅ Admin created successfully!");
     process.exit();
-
   } catch (err) {
-    console.error("❌ Error:", err.message);
+    console.error("❌ Error creating admin:", err.message);
     process.exit(1);
   }
 };
