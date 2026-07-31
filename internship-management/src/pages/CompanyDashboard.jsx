@@ -250,7 +250,7 @@ useEffect(() => {
       }
 
       const res = await axios.get(
-        "https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/jobs",
+        "https://student-internship-system.vercel.app/api/jobs",
         {
           headers: getAuthHeaders(),
         }
@@ -288,7 +288,7 @@ useEffect(() => {
 
     const res =
       await axios.get(
-`https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/company/applications?companyId=${storedUser._id}`,
+`https://student-internship-system.vercel.app/api/company/applications?companyId=${storedUser._id}`,
         
       );
 
@@ -373,7 +373,7 @@ useEffect(() => {
       merchant_id,
       return_url: "http://localhost:3000/company",
       cancel_url: "http://localhost:3000/company",
-      notify_url: "https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/payment-notify",
+      notify_url: "https://student-internship-system.vercel.app/payment-notify",
       order_id,
       items: form.title,
       amount,
@@ -431,7 +431,7 @@ useEffect(() => {
       if (editId) {
 
         await axios.put(
-          `https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/jobs/${editId}`,
+          `https://student-internship-system.vercel.app/api/jobs/${editId}`,
           form,
           {
             headers: getAuthHeaders(),
@@ -468,7 +468,7 @@ useEffect(() => {
         };
 
         await axios.post(
-          "https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/jobs",
+          "https://student-internship-system.vercel.app/api/jobs",
           payload,
           {
             headers: getAuthHeaders(),
@@ -539,7 +539,7 @@ useEffect(() => {
     try {
 
       await axios.delete(
-        `https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/jobs/${id}`,
+        `https://student-internship-system.vercel.app/api/jobs/${id}`,
         {
           headers: getAuthHeaders(),
         }

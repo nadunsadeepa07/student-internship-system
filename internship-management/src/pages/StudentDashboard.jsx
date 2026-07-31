@@ -77,7 +77,7 @@ function StudentDashboard() {
   /* LOAD JOBS */
   useEffect(() => {
     axios
-      .get("https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/jobs")
+      .get("https://student-internship-system.vercel.app/api/jobs")
       .then((res) => setAllJobs(res.data))
       .catch((err) => console.log(err));
   }, []);
@@ -88,7 +88,7 @@ function StudentDashboard() {
       if (!user) return;
 
       const res = await axios.get(
-        `https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/student/applications/${user._id}`
+        `https://student-internship-system.vercel.app/api/student/applications/${user._id}`
       );
 
       console.log("MY APPLICATIONS:", res.data);

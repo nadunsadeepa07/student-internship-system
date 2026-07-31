@@ -47,7 +47,7 @@ function Testimonials() {
   const fetchComments = async () => {
     try {
       const res = await axios.get(
-        "https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/comments"
+        "https://student-internship-system.vercel.app/api/comments"
       );
 
       setComments(res.data);
@@ -98,7 +98,7 @@ function Testimonials() {
       };
 
       const res = await axios.post(
-        "https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/comments",
+        "https://student-internship-system.vercel.app/api/comments",
         payload
       );
 

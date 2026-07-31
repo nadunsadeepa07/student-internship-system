@@ -279,7 +279,7 @@ function Home() {
   // LOAD TESTIMONIAL COMMENTS
   useEffect(() => {
     axios
-      .get("https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/comments")
+      .get("https://student-internship-system.vercel.app/api/comments")
       .then((res) => setComments(res.data))
       .catch((err) => console.log(err));
   }, []);

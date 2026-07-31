@@ -23,7 +23,7 @@ function JobDetails({ id: modalId, isModal }) {
 
   useEffect(() => {
     axios
-      .get(`https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/jobs/${id}`)
+      .get(`https://student-internship-system.vercel.app/api/jobs/${id}`)
       .then((res) => {
         setJob(res.data);
         setLoading(false);

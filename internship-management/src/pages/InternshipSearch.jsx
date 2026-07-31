@@ -28,7 +28,7 @@ function InternshipSearch() {
 
   useEffect(() => {
     axios
-      .get("https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/jobs")
+      .get("https://student-internship-system.vercel.app/api/jobs")
       .then((res) => setJobs(res.data))
       .catch((err) => console.log(err));
   }, []);

@@ -379,7 +379,7 @@ const AppCardList = ({ app, index, onAccept, onReject }) => {
               ))}
             </div>
           )}
-          <a href={`https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/uploads/${app.resume}`} target="_blank" rel="noreferrer"
+          <a href={`https://student-internship-system.vercel.app/uploads/${app.resume}`} target="_blank" rel="noreferrer"
             style={{ fontSize: 12, color: PRIMARY, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5, fontFamily: MONO }}>
             📄 {app.resume}
           </a>
@@ -520,7 +520,7 @@ const ApplicationsPanel = ({ companyId, getAuthHeaders, onBack }) => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/company/applications?companyId=${companyId}`,
+        `https://student-internship-system.vercel.app/api/company/applications?companyId=${companyId}`,
         { headers: getAuthHeaders() }
       );
       setApplications(res.data);
@@ -538,7 +538,7 @@ const ApplicationsPanel = ({ companyId, getAuthHeaders, onBack }) => {
 
   const acceptApplication = async (id, date, time) => {
     try {
-      await axios.put(`https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/company/application/accept/${id}`, { date, time });
+      await axios.put(`https://student-internship-system.vercel.app/api/company/application/accept/${id}`, { date, time });
       fetchApplications();
       setInterviewApp(null);
       showToast("Interview scheduled successfully!");
@@ -550,7 +550,7 @@ const ApplicationsPanel = ({ companyId, getAuthHeaders, onBack }) => {
 
   const rejectApplication = async (id) => {
     try {
-      await axios.put(`https://student-internship-system-7k5pqi68j-internship-project1.vercel.app/api/company/application/reject/${id}`);
+      await axios.put(`https://student-internship-system.vercel.app/api/company/application/reject/${id}`);
       fetchApplications();
       setRejectConfirm(null);
       showToast("Application rejected");
