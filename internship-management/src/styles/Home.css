@@ -957,7 +957,6 @@ body {
   position: relative;
   overflow: hidden;
   cursor: default;
-  /* BUG FIX: removed margin-left: -50% that was hiding cards */
   margin-left: 0;
 }
 
