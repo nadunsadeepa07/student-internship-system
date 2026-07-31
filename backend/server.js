@@ -1,18 +1,11 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const path = require("path");
 
 dotenv.config();
 
-/* =========================================
-   ENVIRONMENT VARIABLES
-========================================= */
-
-const MONGO_URI =
-  process.env.MONGO_URI ||
-  "mongodb://127.0.0.1:27017/internshipDB";
+const connectDB = require("./config/db");
 
 /* =========================================
    EXPRESS APP
@@ -92,9 +85,6 @@ app.use(
   })
 );
 
-// Handle Preflight Requests
-
-
 /* =========================================
    BODY PARSER
 ========================================= */
@@ -106,6 +96,23 @@ app.use(
     extended: true,
   })
 );
+
+/* =========================================
+   DATABASE CONNECTION MIDDLEWARE
+   Waits for a ready MongoDB connection before
+   any route handler runs. Prevents the Mongoose
+   "buffering timed out" error on serverless cold starts.
+========================================= */
+
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error("❌ MongoDB Error:", err);
+    res.status(500).json({ message: "Database connection failed" });
+  }
+});
 
 /* =========================================
    STATIC FILES
@@ -173,18 +180,5 @@ app.use((err, req, res, next) => {
   });
 
 });
-
-/* =========================================
-   DATABASE
-========================================= */
-
-mongoose
-  .connect(MONGO_URI)
-  .then(() => {
-    console.log("✅ MongoDB Connected");
-  })
-  .catch((err) => {
-    console.error("❌ MongoDB Error:", err);
-  });
 
 module.exports = app;
