@@ -210,6 +210,7 @@ function Login({ initialMode = "login", onClose }) {
           role: form.role,
           nic: form.nic,
           companyRegNo: form.companyRegNo,
+          status: "approved",
         });
 
         const { token, user } = res.data;
@@ -335,6 +336,32 @@ function Login({ initialMode = "login", onClose }) {
               )}
 
               {isLogin && <p>Sign in to access your dashboard</p>}
+            </div>
+
+            {/* ================= WARNING BANNER - ENGLISH ONLY ================= */}
+            <div className="warning-banner">
+              <div className="warning-icon">⚠️</div>
+              <div className="warning-content">
+                <h4>Important Notification</h4>
+                <p>
+                  <strong>Standard Workflow:</strong>
+                  <br />
+                  • Every account must be approved by the Admin upon Registration.
+                  <br />
+                  • Only Admin-approved accounts can be used for Login.
+                </p>
+                <p style={{ marginTop: "6px", color: "#d97706" }}>
+                  <em>
+                    <strong>For this Demo:</strong>
+                    <br />
+                    • Admin approval for Registration has been temporarily disabled.
+                    <br />
+                    Therefore, you can access the system immediately after registering.
+                    <br />
+                    • Please note that Login still requires existing accounts to be Admin-approved.
+                  </em>
+                </p>
+              </div>
             </div>
 
             {/* ERROR */}
