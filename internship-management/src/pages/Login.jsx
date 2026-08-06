@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
-
 import loginImg from "../assets/login.avif";
 import companyImg from "../assets/cregi.png";
 import studentImg from "../assets/cregi.png";
@@ -65,85 +64,75 @@ function Login({ initialMode = "login", onClose }) {
     "Kegalle",
   ];
 
-
-
   const groupedCategories = {
-  IT: [
-    "Software Engineering",
-    "Web Development",
-    "Mobile App Development",
-    "UI/UX Design",
-    "Cybersecurity",
-    "Data Science",
-    "Artificial Intelligence",
-    "Cloud Computing",
-    "Networking",
-    "Database Administration",
-    "QA / Software Testing",
-    "DevOps",
-  ],
-
-  Finance: [
-    "Accounting",
-    "Auditing",
-    "Taxation",
-    "Banking",
-    "Financial Analysis",
-    "Payroll Management",
-    "Investment Management",
-    "Insurance",
-    "Bookkeeping",
-  ],
-
-  Management: [
-    "Business Management",
-    "Human Resource Management (HRM)",
-    "Project Management",
-    "Operations Management",
-    "Supply Chain Management",
-    "Office Administration",
-    "Entrepreneurship",
-    "Strategic Management",
-  ],
-
-  Marketing: [
-    "Digital Marketing",
-    "Social Media Marketing",
-    "SEO",
-    "Brand Management",
-    "Sales Executive",
-    "Advertising",
-    "Market Research",
-    "Business Development",
-  ],
-
-  Education: [
-    "School Teaching",
-    "Higher Education",
-    "Early Childhood Education",
-    "Educational Administration",
-    "Training & Development",
-  ],
-
-  Creative: [
-    "Graphic Design",
-    "Animation",
-    "Video Editing",
-    "Fashion Design",
-    "Interior Design",
-    "Multimedia Production",
-  ],
-
-  Agriculture: [
-    "Agriculture",
-    "Food Technology",
-    "Environmental Management",
-    "Forestry",
-    "Fisheries",
-  ],
-};
-
-
+    IT: [
+      "Software Engineering",
+      "Web Development",
+      "Mobile App Development",
+      "UI/UX Design",
+      "Cybersecurity",
+      "Data Science",
+      "Artificial Intelligence",
+      "Cloud Computing",
+      "Networking",
+      "Database Administration",
+      "QA / Software Testing",
+      "DevOps",
+    ],
+    Finance: [
+      "Accounting",
+      "Auditing",
+      "Taxation",
+      "Banking",
+      "Financial Analysis",
+      "Payroll Management",
+      "Investment Management",
+      "Insurance",
+      "Bookkeeping",
+    ],
+    Management: [
+      "Business Management",
+      "Human Resource Management (HRM)",
+      "Project Management",
+      "Operations Management",
+      "Supply Chain Management",
+      "Office Administration",
+      "Entrepreneurship",
+      "Strategic Management",
+    ],
+    Marketing: [
+      "Digital Marketing",
+      "Social Media Marketing",
+      "SEO",
+      "Brand Management",
+      "Sales Executive",
+      "Advertising",
+      "Market Research",
+      "Business Development",
+    ],
+    Education: [
+      "School Teaching",
+      "Higher Education",
+      "Early Childhood Education",
+      "Educational Administration",
+      "Training & Development",
+    ],
+    Creative: [
+      "Graphic Design",
+      "Animation",
+      "Video Editing",
+      "Fashion Design",
+      "Interior Design",
+      "Multimedia Production",
+    ],
+    Agriculture: [
+      "Agriculture",
+      "Food Technology",
+      "Environmental Management",
+      "Forestry",
+      "Fisheries",
+    ],
+  };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -152,23 +141,23 @@ function Login({ initialMode = "login", onClose }) {
 
   // ================= REDIRECT =================
   const redirectUser = (role, status) => {
+    // ----- තාවකාලිකව pending check එක අක්‍රිය කර ඇත -----
+    // if (status === "pending") {
+    //   navigate("/waiting");
+    //   return;
+    // }
 
-  if (status === "pending") {
-    navigate("/waiting");
-    return;
-  }
+    if (status === "rejected") {
+      alert("Your account is rejected");
+      return;
+    }
 
-  if (status === "rejected") {
-    alert("Your account is rejected");
-    return;
-  }
-
-  if (role === "Student") {
-    navigate("/student");
-  } else if (role === "Company") {
-    navigate("/company");
-  }
-};
+    if (role === "Student") {
+      navigate("/student");
+    } else if (role === "Company") {
+      navigate("/company");
+    }
+  };
 
   // ================= SAVE SESSION =================
   const saveSession = (token, user) => {
@@ -183,67 +172,71 @@ function Login({ initialMode = "login", onClose }) {
 
   // ================= LOGIN / REGISTER =================
   const handleAuth = async () => {
-  try {
-    setLoading(true);
-    setError("");
+    try {
+      setLoading(true);
+      setError("");
 
-    if (!isLogin) {
-      if (!form.username || !form.email || !form.password || !form.role) {
-        setLoading(false);
-        return setError("Please fill all required fields");
+      if (!isLogin) {
+        if (!form.username || !form.email || !form.password || !form.role) {
+          setLoading(false);
+          return setError("Please fill all required fields");
+        }
+
+        // Student නම් NIC check
+        if (form.role === "Student" && !form.nic) {
+          setLoading(false);
+          return setError("NIC number is required");
+        }
+
+        // Company නම් RegNo check
+        if (form.role === "Company" && !form.companyRegNo) {
+          setLoading(false);
+          return setError("Company Registration No is required");
+        }
+
+        if (form.password !== form.confirmPassword) {
+          setLoading(false);
+          return setError("Passwords do not match");
+        }
+
+        const res = await api.post("/register", {
+          username: form.username,
+          email: form.email,
+          address: form.address,
+          mobile: form.mobile,
+          district: form.district,
+          jobTitle: form.jobTitle,
+          password: form.password,
+          role: form.role,
+          nic: form.nic,
+          companyRegNo: form.companyRegNo,
+        });
+
+        const { token, user } = res.data;
+
+        // ----- තාවකාලිකව status එක "approved" ලෙස override කරන්න -----
+        user.status = "approved"; // හෝ "active"
+
+        saveSession(token, user);
+        redirectUser(user.role, user.status);
+        return;
       }
 
-      // Student නම් NIC check
-      if (form.role === "Student" && !form.nic) {
-        setLoading(false);
-        return setError("NIC number is required");
-      }
-
-      // Company නම් RegNo check
-      if (form.role === "Company" && !form.companyRegNo) {
-        setLoading(false);
-        return setError("Company Registration No is required");
-      }
-
-      if (form.password !== form.confirmPassword) {
-        setLoading(false);
-        return setError("Passwords do not match");
-      }
-
-      const res = await api.post("/register", {
-        username: form.username,
+      // LOGIN
+      const res = await api.post("/login", {
         email: form.email,
-        address: form.address,
-        mobile: form.mobile,
-        district: form.district,
-        jobTitle: form.jobTitle,
         password: form.password,
-        role: form.role,
-        nic: form.nic,                   // ✅ fix
-        companyRegNo: form.companyRegNo, // ✅ fix
       });
 
       const { token, user } = res.data;
       saveSession(token, user);
       redirectUser(user.role, user.status);
-      return;
+    } catch (err) {
+      setError(err.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
-
-    // LOGIN
-    const res = await api.post("/login", {
-      email: form.email,
-      password: form.password,
-    });
-
-    const { token, user } = res.data;
-    saveSession(token, user);
-    redirectUser(user.role, user.status); // ✅ status pass කරන්න
-  } catch (err) {
-    setError(err.response?.data?.message || "Something went wrong");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   // ================= PASSWORD STRENGTH =================
   const getPasswordStrength = () => {
@@ -524,7 +517,6 @@ function Login({ initialMode = "login", onClose }) {
                           />
                         </div>
 
-
                         <div className="input-group">
                           <label>NIC Number</label>
                           <input
@@ -535,7 +527,6 @@ function Login({ initialMode = "login", onClose }) {
                             onChange={handleChange}
                           />
                         </div>
-
 
                         <div className="input-row">
                           <div className="input-group">
@@ -579,28 +570,26 @@ function Login({ initialMode = "login", onClose }) {
                           </div>
 
                           <div className="input-group">
-                              <label>Job Title</label>
-
-                              <select
-                                name="jobTitle"
-                                value={form.jobTitle}
-                                onChange={handleChange}
-                              >
-                                <option value="">Select Job Title</option>
-
-                                {Object.entries(groupedCategories).map(
-                                  ([category, jobs]) => (
-                                    <optgroup label={category} key={category}>
-                                      {jobs.map((job) => (
-                                        <option key={job} value={job}>
-                                          {job}
-                                        </option>
-                                      ))}
-                                    </optgroup>
-                                  )
-                                )}
-                              </select>
-                            </div>
+                            <label>Job Title</label>
+                            <select
+                              name="jobTitle"
+                              value={form.jobTitle}
+                              onChange={handleChange}
+                            >
+                              <option value="">Select Job Title</option>
+                              {Object.entries(groupedCategories).map(
+                                ([category, jobs]) => (
+                                  <optgroup label={category} key={category}>
+                                    {jobs.map((job) => (
+                                      <option key={job} value={job}>
+                                        {job}
+                                      </option>
+                                    ))}
+                                  </optgroup>
+                                )
+                              )}
+                            </select>
+                          </div>
                         </div>
                       </>
                     )}
