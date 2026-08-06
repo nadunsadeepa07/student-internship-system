@@ -31,6 +31,13 @@ import {
   CreditCard,
 } from "lucide-react";
 
+// ===============================
+// 🔧 PAYMENT GATEWAY SWITCH
+// ===============================
+// Payment temporarily disabled — set back to true to re-enable PayHere
+// checkout when publishing an internship.
+const PAYMENT_ENABLED = false;
+
 function CompanyDashboard() {
 
   const [user, setUser] = useState(null);
@@ -400,7 +407,8 @@ useEffect(() => {
 
   const saveJob = async () => {
 
-    if (!paymentCompleted && !editId) {
+    // 🔧 Payment gateway temporarily disabled — skip straight to saving.
+    if (PAYMENT_ENABLED && !paymentCompleted && !editId) {
 
       payNow();
 
@@ -462,9 +470,9 @@ useEffect(() => {
 
           applicants: [],
 
-          paymentStatus: "Paid",
+          paymentStatus: PAYMENT_ENABLED ? "Paid" : "Not Required",
 
-          paymentAmount: "500",
+          paymentAmount: PAYMENT_ENABLED ? "500" : "0",
         };
 
         await axios.post(
@@ -1006,7 +1014,7 @@ return (
 
             {/* PAYMENT STATUS */}
 
-            {!editId && (
+            {!editId && PAYMENT_ENABLED && (
 
               <div
                 style={{
@@ -1038,6 +1046,8 @@ return (
                 ? "Processing..."
                 : editId
                 ? "Update Internship"
+                : !PAYMENT_ENABLED
+                ? "Publish Internship"
                 : paymentCompleted
                 ? "Publish Internship"
                 : "Pay Rs.500 & Publish"}
@@ -1122,7 +1132,7 @@ return (
 
                     <div className="salary-tag">
                       <CreditCard size={14} />
-                      Paid
+                      {job.paymentStatus === "Paid" ? "Paid" : "Free"}
                     </div>
 
                   </div>
