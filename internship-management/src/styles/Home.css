@@ -265,7 +265,7 @@ html[data-theme='dark'] {
 }
 
 /* Dark mode toggle (shared pattern with InternshipSearch.css) */
-.theme-toggle-btn {
+.theme-togglee-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -278,16 +278,16 @@ html[data-theme='dark'] {
   transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
-.theme-toggle-btn:hover {
-  transform: translateY(-2px) rotate(-8deg);
+.theme-togglee-btn:hover {
+  transform: translateY(-2px) ;
   box-shadow: var(--shadow-glow);
 }
 
-.theme-toggle-icon {
+.theme-togglee-icon {
   display: flex;
 }
 
-.theme-toggle-icon.spin-in {
+.theme-togglee-icon.spin-in {
   animation: spin-in 0.5s ease;
 }
 

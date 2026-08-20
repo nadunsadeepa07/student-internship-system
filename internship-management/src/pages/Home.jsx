@@ -363,11 +363,11 @@ function Home() {
           </a>
 
           <button
-            className="theme-toggle-btn"
+            className="theme-togglee-btn"
             onClick={toggleDarkMode}
             aria-label="Toggle dark mode"
           >
-            <span className={`theme-toggle-icon ${darkMode ? "spin-in" : ""}`}>
+            <span className={`theme-togglee-icon ${darkMode ? "spin-in" : ""}`}>
               {darkMode ? <Sun size={18} /> : <Moon size={18} />}
             </span>
           </button>
@@ -392,6 +392,7 @@ function Home() {
               onClick={() => {
                 setAuthMode("login");
                 setShowAuth(true);
+                setMobileMenuOpen(false);
               }}
             >
               {t.nav5}
