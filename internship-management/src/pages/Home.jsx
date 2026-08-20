@@ -392,7 +392,6 @@ function Home() {
               onClick={() => {
                 setAuthMode("login");
                 setShowAuth(true);
-                setMobileMenuOpen(false);
               }}
             >
               {t.nav5}
