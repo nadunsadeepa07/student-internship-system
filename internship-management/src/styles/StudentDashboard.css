@@ -259,7 +259,7 @@
 
 /* ----- Sidebar Buttons ----- */
 .logout-btn,
-.theme-toggle-btn {
+.theme-togglee-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -282,12 +282,12 @@
   opacity: 1;
   transform: translateY(-2px);
 }
-.theme-toggle-btn {
+.theme-togglee-btn {
   background: var(--surface);
   border: 1px solid var(--surface-border);
   color: var(--text);
 }
-.theme-toggle-btn:hover {
+.theme-togglee-btn:hover {
   border-color: var(--violet);
   color: var(--violet);
 }

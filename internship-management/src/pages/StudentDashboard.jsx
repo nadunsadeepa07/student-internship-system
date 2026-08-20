@@ -188,7 +188,7 @@ function StudentDashboard() {
           <LogOut size={18} /> Logout
         </button>
 
-        <button className="theme-toggle-btn" onClick={toggleDarkMode}>
+        <button className="theme-togglee-btn" onClick={toggleDarkMode}>
           {darkMode ? <Sun size={18} /> : <Moon size={18} />}
           {darkMode ? " Light Mode" : " Dark Mode"}
         </button>
