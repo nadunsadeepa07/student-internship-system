@@ -12,6 +12,8 @@ import {
   X,
   ArrowLeft,
   Send,
+  Moon,
+  Sun,
 } from "lucide-react";
 import "../styles/Apply.css";
 import { getStoredUser } from "../utils/storage";
@@ -27,16 +29,36 @@ function Apply() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [jobDetails, setJobDetails] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
 
   const query = new URLSearchParams(location.search);
   const jobId = query.get("jobId");
-
   const user = getStoredUser();
 
-  // Fetch job details
+  // ---------- DARK MODE ----------
+  useEffect(() => {
+    const stored = localStorage.getItem("applyTheme");
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialDark = stored ? stored === "dark" : prefersDark;
+    setDarkMode(initialDark);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "data-theme",
+      darkMode ? "dark" : "light"
+    );
+    localStorage.setItem("applyTheme", darkMode ? "dark" : "light");
+  }, [darkMode]);
+
+  const toggleDarkMode = () => setDarkMode((prev) => !prev);
+
+  // ---------- FETCH JOB ----------
   useEffect(() => {
     if (jobId) {
       axios
@@ -46,44 +68,43 @@ function Apply() {
     }
   }, [jobId]);
 
-  // ADD SKILL
+  // ---------- SKILL HANDLERS ----------
   const addSkill = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      if (skillInput.trim() === "") return;
-      if (skills.includes(skillInput.trim())) {
+      const trimmed = skillInput.trim();
+      if (!trimmed) return;
+      if (skills.includes(trimmed)) {
         alert("Skill already added!");
         return;
       }
-      setSkills([...skills, skillInput.trim()]);
+      setSkills([...skills, trimmed]);
       setSkillInput("");
+      setErrors((prev) => ({ ...prev, skills: "" }));
     }
   };
 
-  // REMOVE SKILL
   const removeSkill = (index) => {
     setSkills(skills.filter((_, i) => i !== index));
   };
 
-  // VALIDATION
+  // ---------- VALIDATION ----------
   const validateForm = () => {
     const newErrors = {};
-
     if (!name.trim()) newErrors.name = "Name is required";
     if (!email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = "Email is invalid";
+      newErrors.email = "Invalid email format";
     }
     if (!about.trim()) newErrors.about = "Please tell us about yourself";
     if (skills.length === 0) newErrors.skills = "Add at least one skill";
     if (!file) newErrors.file = "Please upload your resume";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // PROGRESS CALCULATION
+  // ---------- PROGRESS ----------
   const getProgress = () => {
     let filled = 0;
     if (name) filled++;
@@ -94,7 +115,6 @@ function Apply() {
     return (filled / 5) * 100;
   };
 
-  // GET STEP
   const getStep = () => {
     const progress = getProgress();
     if (progress === 0) return 0;
@@ -103,98 +123,53 @@ function Apply() {
     return 3;
   };
 
-
-  
-
-
-  // SUBMIT
+  // ---------- SUBMIT ----------
   const submitForm = async () => {
-    if (!validateForm()) {
-      return;
-    }
-
+    if (!validateForm()) return;
+    setLoading(true);
     try {
-  setLoading(true);
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("email", email);
+      formData.append("about", about);
+      formData.append("skills", JSON.stringify(skills));
+      formData.append("file", file);
+      formData.append("studentId", user?._id || "");
 
-  const formData = new FormData();
-
-  
-
-  formData.append("name", name);
-
-  formData.append("email", email);
-
-  formData.append("about", about);
-
-  formData.append(
-    "skills",
-    JSON.stringify(skills)
-  );
-
-  formData.append("file", file);
-  formData.append("studentId", user._id);
-
-  await axios.post(
-    `https://student-internship-system.vercel.app/api/applications/${jobId}`,
-    formData
-  );
-
-  setPopup(true);
-
-  setTimeout(() => {
-    navigate("/student");
-  }, 3000);
-
-  
-
-} catch (error) {
-
-  console.error(error);
-
-  alert("Error submitting application");
-
-} finally {
-
-  setLoading(false);
-}
-
-    
+      await axios.post(
+        `https://student-internship-system.vercel.app/api/applications/${jobId}`,
+        formData
+      );
+      setPopup(true);
+      setTimeout(() => navigate("/student"), 3000);
+    } catch (error) {
+      console.error(error);
+      alert("Error submitting application");
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // ---------- RENDER ----------
   return (
-    <div className="apply-page">
-      {/* Background Elements */}
+    <div className={`apply-page ${darkMode ? "dark" : ""}`}>
+      {/* Background decorations */}
       <div className="bg-blur blur-1"></div>
       <div className="bg-blur blur-2"></div>
       <div className="bg-grid"></div>
 
-      {/* NAV */}
-      {/*<nav className="modern-nav">
-        <div className="nav-container">
-          <div className="logo-section">
-            <div className="logo-box">
-              <Sparkles size={24} />
-            </div>
-            <div className="logo">
-              SIMS <span>Portal</span>
-            </div>
-          </div>
-          <div className="nav-links">
-            <a href="/">Home</a>
-           
-            <a href="/student">Dashboard</a>
-          </div>
-        </div>
-      </nav>*/}
+      {/* Floating Dark Mode Toggle */}
+      <button className="floating-theme-toggle" onClick={toggleDarkMode}>
+        {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+      </button>
 
-      {/* MAIN CONTAINER */}
+      {/* ===== MAIN ===== */}
       <div className="apply-container">
         <div className="apply-wrapper">
-          {/* LEFT SIDE - JOB INFO */}
+          {/* LEFT: Job Info */}
           <div className="apply-left">
             <button className="back-btn" onClick={() => navigate(-1)}>
-              <ArrowLeft size={20} />
-              Back to Jobs
+              <ArrowLeft size={20} /> Back to Jobs
             </button>
 
             <div className="job-info-card">
@@ -250,16 +225,16 @@ function Apply() {
                   <li>Ensure your resume is up to date</li>
                   <li>Highlight relevant skills and experience</li>
                   <li>Write a compelling personal statement</li>
-                  <li>Double-check all information before submitting</li>
+                  <li>Double‑check all information before submitting</li>
                 </ul>
               </div>
             </div>
           </div>
 
-          {/* RIGHT SIDE - APPLICATION FORM */}
+          {/* RIGHT: Form */}
           <div className="apply-right">
             <div className="form-card">
-              {/* PROGRESS SECTION */}
+              {/* Progress */}
               <div className="progress-section">
                 <div className="progress-header">
                   <h3>Application Progress</h3>
@@ -294,12 +269,11 @@ function Apply() {
                 <p>Complete all fields to apply for this position</p>
               </div>
 
-              <form className="application-form">
-                {/* NAME */}
+              <form className="application-form" onSubmit={(e) => e.preventDefault()}>
+                {/* Name */}
                 <div className="form-group">
                   <label>
-                    <User size={18} />
-                    Full Name <span className="required">*</span>
+                    <User size={18} /> Full Name <span className="required">*</span>
                   </label>
                   <input
                     type="text"
@@ -307,20 +281,17 @@ function Apply() {
                     value={name}
                     onChange={(e) => {
                       setName(e.target.value);
-                      setErrors({ ...errors, name: "" });
+                      setErrors((prev) => ({ ...prev, name: "" }));
                     }}
                     className={errors.name ? "error" : ""}
                   />
-                  {errors.name && (
-                    <span className="error-message">{errors.name}</span>
-                  )}
+                  {errors.name && <span className="error-message">{errors.name}</span>}
                 </div>
 
-                {/* EMAIL */}
+                {/* Email */}
                 <div className="form-group">
                   <label>
-                    <Mail size={18} />
-                    Email Address <span className="required">*</span>
+                    <Mail size={18} /> Email Address <span className="required">*</span>
                   </label>
                   <input
                     type="email"
@@ -328,44 +299,37 @@ function Apply() {
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
-                      setErrors({ ...errors, email: "" });
+                      setErrors((prev) => ({ ...prev, email: "" }));
                     }}
                     className={errors.email ? "error" : ""}
                   />
-                  {errors.email && (
-                    <span className="error-message">{errors.email}</span>
-                  )}
+                  {errors.email && <span className="error-message">{errors.email}</span>}
                 </div>
 
-                {/* ABOUT */}
+                {/* About */}
                 <div className="form-group">
                   <label>
-                    <FileText size={18} />
-                    Why should we hire you? <span className="required">*</span>
+                    <FileText size={18} /> Why should we hire you?{" "}
+                    <span className="required">*</span>
                   </label>
                   <textarea
-                    placeholder="Tell us about your experience, motivation, and what makes you a great fit for this role..."
+                    placeholder="Tell us about your experience, motivation, and what makes you a great fit..."
                     value={about}
                     onChange={(e) => {
                       setAbout(e.target.value);
-                      setErrors({ ...errors, about: "" });
+                      setErrors((prev) => ({ ...prev, about: "" }));
                     }}
                     rows="6"
                     className={errors.about ? "error" : ""}
                   />
-                  <div className="char-count">
-                    {about.length} / 500 characters
-                  </div>
-                  {errors.about && (
-                    <span className="error-message">{errors.about}</span>
-                  )}
+                  <div className="char-count">{about.length} / 500 characters</div>
+                  {errors.about && <span className="error-message">{errors.about}</span>}
                 </div>
 
-                {/* SKILLS */}
+                {/* Skills */}
                 <div className="form-group">
                   <label>
-                    <Award size={18} />
-                    Skills <span className="required">*</span>
+                    <Award size={18} /> Skills <span className="required">*</span>
                   </label>
                   <input
                     type="text"
@@ -373,12 +337,11 @@ function Apply() {
                     value={skillInput}
                     onChange={(e) => setSkillInput(e.target.value)}
                     onKeyDown={addSkill}
-                    className={errors.skills ? "error" : ""}
+                    className={errors.skills && skills.length === 0 ? "error" : ""}
                   />
                   {errors.skills && skills.length === 0 && (
                     <span className="error-message">{errors.skills}</span>
                   )}
-
                   <div className="skills-container">
                     {skills.map((skill, index) => (
                       <div className="skill-tag" key={index}>
@@ -393,25 +356,19 @@ function Apply() {
                       </div>
                     ))}
                   </div>
-                  <small className="form-hint">
-                    Press Enter after typing each skill
-                  </small>
+                  <small className="form-hint">Press Enter after typing each skill</small>
                 </div>
 
-                {/* FILE UPLOAD */}
+                {/* File Upload */}
                 <div className="form-group">
                   <label>
-                    <Upload size={18} />
-                    Resume / CV <span className="required">*</span>
+                    <Upload size={18} /> Resume / CV <span className="required">*</span>
                   </label>
-
                   <div
-                    className={`file-upload-box ${
-                      errors.file ? "error" : ""
-                    } ${file ? "has-file" : ""}`}
-                    onClick={() =>
-                      document.getElementById("fileInput").click()
-                    }
+                    className={`file-upload-box ${errors.file ? "error" : ""} ${
+                      file ? "has-file" : ""
+                    }`}
+                    onClick={() => document.getElementById("fileInput").click()}
                   >
                     {file ? (
                       <div className="file-info">
@@ -428,6 +385,7 @@ function Apply() {
                           onClick={(e) => {
                             e.stopPropagation();
                             setFile(null);
+                            setErrors((prev) => ({ ...prev, file: "" }));
                           }}
                         >
                           <X size={20} />
@@ -436,14 +394,11 @@ function Apply() {
                     ) : (
                       <div className="file-upload-prompt">
                         <Upload size={48} className="upload-icon" />
-                        <p className="upload-text">
-                          Click to upload your resume
-                        </p>
+                        <p className="upload-text">Click to upload your resume</p>
                         <p className="upload-hint">PDF, DOC, DOCX (Max 5MB)</p>
                       </div>
                     )}
                   </div>
-
                   <input
                     id="fileInput"
                     type="file"
@@ -451,15 +406,12 @@ function Apply() {
                     accept=".pdf,.doc,.docx"
                     onChange={(e) => {
                       setFile(e.target.files[0]);
-                      setErrors({ ...errors, file: "" });
+                      setErrors((prev) => ({ ...prev, file: "" }));
                     }}
                   />
-                  {errors.file && (
-                    <span className="error-message">{errors.file}</span>
-                  )}
+                  {errors.file && <span className="error-message">{errors.file}</span>}
                 </div>
 
-                {/* SUBMIT BUTTON */}
                 <button
                   type="button"
                   className="submit-btn"
@@ -468,13 +420,11 @@ function Apply() {
                 >
                   {loading ? (
                     <>
-                      <span className="spinner"></span>
-                      Submitting...
+                      <span className="spinner"></span> Submitting...
                     </>
                   ) : (
                     <>
-                      <Send size={20} />
-                      Submit Application
+                      <Send size={20} /> Submit Application
                     </>
                   )}
                 </button>
@@ -489,7 +439,7 @@ function Apply() {
         </div>
       </div>
 
-      {/* SUCCESS POPUP */}
+      {/* Success Popup */}
       {popup && (
         <div className="success-overlay">
           <div className="success-popup">
@@ -502,11 +452,9 @@ function Apply() {
               back to you soon.
             </p>
             <div className="success-animation">
-              <div className="confetti"></div>
-              <div className="confetti"></div>
-              <div className="confetti"></div>
-              <div className="confetti"></div>
-              <div className="confetti"></div>
+              {[...Array(6)].map((_, i) => (
+                <div className="confetti" key={i}></div>
+              ))}
             </div>
           </div>
         </div>

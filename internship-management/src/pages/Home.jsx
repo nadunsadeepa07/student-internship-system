@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import { Sparkles}from "lucide-react";
+import { Sparkles, Sun, Moon } from "lucide-react";
 import Login from "../pages/Login";
 import "../styles/Home.css";
 import { getStoredUser } from "../utils/storage";
@@ -14,6 +14,9 @@ function Home() {
   const [user, setUser] = useState(null);
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState("login");
+
+  // ✅ Dark Mode state
+  const [darkMode, setDarkMode] = useState(false);
 
   // TESTIMONIAL COMMENTS
   const [comments, setComments] = useState([]);
@@ -284,6 +287,27 @@ function Home() {
       .catch((err) => console.log(err));
   }, []);
 
+  // ✅ Load saved theme (or system preference) on first mount
+  useEffect(() => {
+    const stored = localStorage.getItem("theme");
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialDark = stored ? stored === "dark" : prefersDark;
+    setDarkMode(initialDark);
+  }, []);
+
+  // ✅ Apply theme to <html> so it cascades globally, and persist it
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "data-theme",
+      darkMode ? "dark" : "light"
+    );
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
+
+  const toggleDarkMode = () => setDarkMode((prev) => !prev);
+
   const getStars = (count) => {
     return "★".repeat(count) + "☆".repeat(5 - count);
   };
@@ -294,6 +318,13 @@ function Home() {
     if (lang === "ta")
       return ["இன்டர்ன்ஷிப்", "வேலை", "வாய்ப்புகள்", "வெற்றி"];
     return ["Internships", "Careers", "Opportunities", "Success"];
+  }, [lang]);
+
+  // ✅ Bug fix: reset the typewriter cleanly the instant the language
+  // changes, instead of waiting for the next 90ms tick to catch up.
+  useEffect(() => {
+    setWordIndex(0);
+    setTyped("");
   }, [lang]);
 
   useEffect(() => {
@@ -335,16 +366,28 @@ function Home() {
     return () => io.disconnect();
   }, []);
 
-
   useEffect(() => {
-  const stored = getStoredUser();
+    const stored = getStoredUser();
 
-  if (stored) {
-    setUser(stored);
-  }
-}, []);
+    if (stored) {
+      setUser(stored);
+    }
+  }, []);
 
-
+  // ✅ Bug fix: role check was case-sensitive ("Company" only), so a
+  // company account whose stored role was lowercase "company" (as used
+  // everywhere else in the app) got sent to /student instead of /company.
+  const isCompanyUser = (u) => {
+    if (!u) return false;
+    const role = (
+      u.role ||
+      u.userType ||
+      u.type ||
+      u.accountType ||
+      ""
+    ).toString().toLowerCase();
+    return role === "company";
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -366,12 +409,9 @@ function Home() {
             <Sparkles size={24} />
           </div>
           <div className="logo">
-          SIMS <span>Portal</span>
+            SIMS <span>Portal</span>
+          </div>
         </div>
-            
-        </div>
-
-        
 
         <div className="links">
 
@@ -383,45 +423,48 @@ function Home() {
 
           <a href="#faq">{t.nav4}</a>
 
+          {/* ✅ Dark Mode Toggle */}
+          <button
+            className="theme-toggle-btn"
+            onClick={toggleDarkMode}
+            aria-label="Toggle dark mode"
+            title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            <span className={`theme-toggle-icon ${darkMode ? "spin-in" : ""}`}>
+              {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+            </span>
+          </button>
 
           {user ? (
-          <div
-            className="profile-circle"
-            onClick={() => {
-              if (user.role === "Company") {
-                window.location.href = "/company";
-              } else {
-                window.location.href = "/student";
-              }
-            }}
-            title="Go to Dashboard"
-          >
-            {user.username?.charAt(0).toUpperCase()}
-          </div>
-        ) : (
-          <button
-            className="login-btn"
-            onClick={() => {
-              setAuthMode("login");
-              setShowAuth(true);
-            }}
-          >
-            {t.nav5}
-          </button>
-        )}
-
+            <div
+              className="profile-circle"
+              onClick={() => {
+                if (isCompanyUser(user)) {
+                  window.location.href = "/company";
+                } else {
+                  window.location.href = "/student";
+                }
+              }}
+              title="Go to Dashboard"
+            >
+              {user.username?.charAt(0).toUpperCase()}
+            </div>
+          ) : (
+            <button
+              className="login-btn"
+              onClick={() => {
+                setAuthMode("login");
+                setShowAuth(true);
+              }}
+            >
+              {t.nav5}
+            </button>
+          )}
 
           <select
+            className="lang-select"
             value={lang}
             onChange={(e) => setLang(e.target.value)}
-            style={{
-              padding: "10px 14px",
-              borderRadius: "999px",
-              border: "none",
-              fontWeight: "700",
-              marginLeft: "8px",
-              cursor: "pointer"
-            }}
           >
             <option value="en">English</option>
             <option value="si">සිංහල</option>
@@ -657,44 +700,38 @@ function Home() {
           © 2026 Internship Management System.
           All Rights Reserved.
         </div>
-      </footer>;
+      </footer>
 
-          {showAuth && (
-  <div
-    className="auth-modal-overlay"
-    onClick={() => setShowAuth(false)}
-  >
-    <div
-      className="auth-modal"
-      onClick={(e) => e.stopPropagation()}
-    >
+      {/* AUTH MODAL */}
+      {showAuth && (
+        <div
+          className="auth-modal-overlay"
+          onClick={() => setShowAuth(false)}
+        >
+          <div
+            className="auth-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
 
-      {/* CLOSE BUTTON */}
-      <button
-        className="close-btn"
-        onClick={() => setShowAuth(false)}
-      >
-        ✕
-      </button>
+            {/* CLOSE BUTTON */}
+            <button
+              className="close-btn"
+              onClick={() => setShowAuth(false)}
+            >
+              ✕
+            </button>
 
-      {/* LOGIN COMPONENT LOAD */}
-      <Login
-        initialMode={authMode}
-        onClose={() => setShowAuth(false)}
-      />
+            {/* LOGIN COMPONENT LOAD */}
+            <Login
+              initialMode={authMode}
+              onClose={() => setShowAuth(false)}
+            />
 
-    </div>
-  </div>
-)}
-
-
-  
-
-     
+          </div>
+        </div>
+      )}
 
     </div>
-
-
   );
 }
 

@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
-import "../styles/AdminDashboard.css"; 
+import "../styles/AdminDashboard.css";
 import { useNavigate } from "react-router-dom";
+import { Moon, Sun, Menu, X, LogOut } from "lucide-react";
 
 const getToken = () =>
   localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -35,8 +36,9 @@ export default function AdminDashboard() {
   const [rejectInput, setRejectInput] = useState("");
   const [actionLoading, setActionLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
 
-  // New state for enhanced functions
+  // Sorting & pagination states...
   const [studentSortKey, setStudentSortKey] = useState("username");
   const [studentSortDir, setStudentSortDir] = useState("asc");
   const [studentPage, setStudentPage] = useState(1);
@@ -55,6 +57,27 @@ export default function AdminDashboard() {
 
   const api = createApi();
 
+  // ---------- DARK MODE ----------
+  useEffect(() => {
+    const stored = localStorage.getItem("adminTheme");
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialDark = stored ? stored === "dark" : prefersDark;
+    setDarkMode(initialDark);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "data-theme",
+      darkMode ? "dark" : "light"
+    );
+    localStorage.setItem("adminTheme", darkMode ? "dark" : "light");
+  }, [darkMode]);
+
+  const toggleDarkMode = () => setDarkMode((prev) => !prev);
+
+  // ---------- TOAST & HELPERS ----------
   const showToast = (msg, type = "success") => {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 3500);
@@ -67,16 +90,15 @@ export default function AdminDashboard() {
     ]);
   };
 
-    const handleLogout = () => {
+  const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("user");
-
     navigate("/");
   };
 
+  // ---------- DATA FETCHING ----------
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
@@ -96,57 +118,44 @@ export default function AdminDashboard() {
   }, []);
 
   const fetchJobs = async () => {
-  try {
-    const res = await axios.get(
-      "https://student-internship-system.vercel.app/api/jobs"
-    );
+    try {
+      const res = await axios.get(
+        "https://student-internship-system.vercel.app/api/jobs"
+      );
+      setJobs(res.data || []);
+      const today = new Date();
+      const expired = res.data.filter((job) => {
+        const created = new Date(job.createdAt);
+        const diff = (today - created) / (1000 * 60 * 60 * 24);
+        return diff >= 30;
+      });
+      setExpiredJobs(expired);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-    setJobs(res.data || []);
+  const fetchRegisteredUsers = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+      const [studentRes, companyRes] = await Promise.all([
+        axios.get("https://student-internship-system.vercel.app/api/admin/students", config),
+        axios.get("https://student-internship-system.vercel.app/api/admin/companies", config),
+      ]);
+      setRegisteredStudents(studentRes.data || []);
+      setRegisteredCompanies(companyRes.data || []);
+    } catch (err) {
+      console.log("fetchRegisteredUsers error:", err.response?.data || err.message);
+    }
+  };
 
-    const today = new Date();
+  useEffect(() => { fetchData(); fetchJobs(); fetchRegisteredUsers(); }, [fetchData]);
 
-    const expired = res.data.filter((job) => {
-      const created = new Date(job.createdAt);
-
-      const diff =
-        (today - created) /
-        (1000 * 60 * 60 * 24);
-
-      return diff >= 30;
-    });
-
-    setExpiredJobs(expired);
-
-  } catch (err) {
-    console.log(err);
-  }
-};
-const fetchRegisteredUsers = async () => {
-  try {
-    const token = localStorage.getItem("token");
-
-    if (!token) return;
-
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
-
-    const [studentRes, companyRes] = await Promise.all([
-      axios.get("https://student-internship-system.vercel.app/api/admin/students", config),
-      axios.get("https://student-internship-system.vercel.app/api/admin/companies", config),
-    ]);
-
-    setRegisteredStudents(studentRes.data || []);
-    setRegisteredCompanies(companyRes.data || []);
-
-  } catch (err) {
-    console.log("fetchRegisteredUsers error:", err.response?.data || err.message);
-  }
-};
-
-
-  useEffect(() => { fetchData(); fetchJobs();  fetchRegisteredUsers(); }, [fetchData]);
-
+  // ---------- APPROVAL / REJECTION ----------
   const openApprove = (type, item) =>
     setModal({ type: "approve", entity: type, item, reason: "" });
 
@@ -176,7 +185,6 @@ const fetchRegisteredUsers = async () => {
         addRecentAction("rejected", entity, item.username);
       }
       await fetchData();
-      // Clear selections on data refresh
       setSelectedStudents(new Set());
       setSelectedCompanies(new Set());
     } catch {
@@ -187,7 +195,7 @@ const fetchRegisteredUsers = async () => {
     }
   };
 
-  // Sorting and filtering helpers
+  // ---------- SORT & FILTER ----------
   const sortData = (data, key, dir) => {
     return [...data].sort((a, b) => {
       let aVal = a[key] || "";
@@ -256,7 +264,7 @@ const fetchRegisteredUsers = async () => {
     }
   };
 
-  // Selection handlers
+  // ---------- SELECTION & BULK ACTIONS ----------
   const toggleSelectStudent = (id) => {
     const newSet = new Set(selectedStudents);
     if (newSet.has(id)) newSet.delete(id);
@@ -287,7 +295,6 @@ const fetchRegisteredUsers = async () => {
     }
   };
 
-  // Bulk actions
   const bulkApprove = async () => {
     const selectedIds = activeTab === "students" ? selectedStudents : selectedCompanies;
     if (selectedIds.size === 0) {
@@ -351,14 +358,14 @@ const fetchRegisteredUsers = async () => {
     }
   };
 
-  // Export CSV
+  // ---------- EXPORT CSV ----------
   const exportToCSV = () => {
     const data = activeTab === "students" ? sortedStudents : sortedCompanies;
     if (data.length === 0) {
       showToast("No data to export", "error");
       return;
     }
-    const headers = activeTab === "students" 
+    const headers = activeTab === "students"
       ? ["Username", "Email", "NIC", "Status"]
       : ["Company Name", "Email", "Registration No.", "Status"];
     const rows = data.map(item => activeTab === "students"
@@ -376,190 +383,119 @@ const fetchRegisteredUsers = async () => {
     showToast("Export completed", "success");
   };
 
-  // Detail modal
+  // ---------- DETAIL MODAL ----------
   const openDetailModal = (type, item) => {
     setDetailModal({ type, item });
   };
 
+  // ---------- DELETE JOB ----------
   const deleteJob = async (id) => {
+    if (!window.confirm("Delete this internship?")) return;
+    try {
+      await axios.delete(`https://student-internship-system.vercel.app/api/jobs/${id}`);
+      showToast("Internship deleted successfully");
+      fetchJobs();
+    } catch {
+      showToast("Delete failed", "error");
+    }
+  };
 
-  if (!window.confirm(
-      "Delete this internship?"
-  )) return;
-
-  try {
-
-    await axios.delete(
-      `https://student-internship-system.vercel.app/api/jobs/${id}`
-    );
-
-    showToast(
-      "Internship deleted successfully"
-    );
-
-    fetchJobs();
-
-  } catch {
-
-    showToast(
-      "Delete failed",
-      "error"
-    );
-  }
-};
+  // ---------- BLOCK / UNBLOCK / REMOVE ----------
   const blockStudent = async (id) => {
-  try {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-    const res = await axios.put(
-      `https://student-internship-system.vercel.app/api/admin/block-student/${id}`,
-      {},
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    console.log(res.data);
-    showToast("Student blocked successfully", "success");
-  } catch (err) {
-    console.log(err.response?.data || err.message);
-    showToast(err.response?.data?.message || "Failed to block student", "error");
-  } finally {
-    await fetchRegisteredUsers(); // හැම විටම Refresh කරන්න
-  }
-};
+    try {
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      await axios.put(
+        `https://student-internship-system.vercel.app/api/admin/block-student/${id}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      showToast("Student blocked successfully", "success");
+    } catch (err) {
+      showToast(err.response?.data?.message || "Failed to block student", "error");
+    } finally {
+      await fetchRegisteredUsers();
+    }
+  };
 
-const unblockStudent = async (id) => {
-  try {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-    await axios.put(
-      `https://student-internship-system.vercel.app/api/admin/unblock-student/${id}`,
-      {},
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    showToast("Student unblocked successfully", "success");
-  } catch (err) {
-    console.log(err.response?.data || err.message);
-    showToast(err.response?.data?.message || "Failed to unblock student", "error");
-  } finally {
-    await fetchRegisteredUsers();
-  }
-};
+  const unblockStudent = async (id) => {
+    try {
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      await axios.put(
+        `https://student-internship-system.vercel.app/api/admin/unblock-student/${id}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      showToast("Student unblocked successfully", "success");
+    } catch (err) {
+      showToast(err.response?.data?.message || "Failed to unblock student", "error");
+    } finally {
+      await fetchRegisteredUsers();
+    }
+  };
 
+  const blockCompany = async (id) => {
+    try {
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      await axios.put(
+        `https://student-internship-system.vercel.app/api/admin/block-company/${id}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      showToast("Company blocked successfully", "success");
+    } catch (err) {
+      showToast(err.response?.data?.message || "Failed to block company", "error");
+    } finally {
+      await fetchRegisteredUsers();
+    }
+  };
 
-const blockCompany = async (id) => {
-  try {
+  const unblockCompany = async (id) => {
+    try {
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      await axios.put(
+        `https://student-internship-system.vercel.app/api/admin/unblock-company/${id}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      showToast("Company unblocked successfully", "success");
+    } catch (err) {
+      showToast(err.response?.data?.message || "Failed to unblock company", "error");
+    } finally {
+      await fetchRegisteredUsers();
+    }
+  };
 
-    const token =
-  localStorage.getItem("token") ||
-  sessionStorage.getItem("token");
+  const removeStudent = async (id) => {
+    if (!window.confirm("Delete this student?")) return;
+    try {
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      await axios.delete(
+        `https://student-internship-system.vercel.app/api/admin/student/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      showToast("Student removed successfully", "success");
+      await fetchRegisteredUsers();
+    } catch (err) {
+      showToast("Failed to remove student", "error");
+    }
+  };
 
-    await axios.put(
-      `https://student-internship-system.vercel.app/api/admin/block-company/${id}`,
-      {},
-      {
-        headers: {
-          Authorization:
-            `Bearer ${token}`,
-        },
-      }
-    );
+  const removeCompany = async (id) => {
+    if (!window.confirm("Delete this company?")) return;
+    try {
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      await axios.delete(
+        `https://student-internship-system.vercel.app/api/admin/company/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      showToast("Company removed successfully", "success");
+      await fetchRegisteredUsers();
+    } catch (err) {
+      showToast("Failed to remove company", "error");
+    }
+  };
 
-    fetchRegisteredUsers();
-
-  } catch (err) {
-    console.log(err);
-  }finally {
-    await fetchRegisteredUsers(); // හැම විටම Refresh කරන්න
-  }
-};
-const unblockCompany = async (id) => {
-  try {
-    const token =
-      localStorage.getItem("token") ||
-      sessionStorage.getItem("token");
-
-    await axios.put(
-      `https://student-internship-system.vercel.app/api/admin/unblock-company/${id}`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    fetchRegisteredUsers();
-
-  } catch (err) {
-    console.log(err);
-  }finally {
-    await fetchRegisteredUsers(); // හැම විටම Refresh කරන්න
-  }
-};
-
-
-const removeStudent = async (id) => {
-
-  if (
-    !window.confirm(
-      "Delete this student?"
-    )
-  ) return;
-
-  try {
-
-    const token =
-  localStorage.getItem("token") ||
-  sessionStorage.getItem("token");
-
-    await axios.delete(
-      `https://student-internship-system.vercel.app/api/admin/student/${id}`,
-      {
-        headers: {
-          Authorization:
-            `Bearer ${token}`,
-        },
-      }
-    );
-
-    fetchRegisteredUsers();
-
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-
-const removeCompany = async (id) => {
-
-  if (
-    !window.confirm(
-      "Delete this company?"
-    )
-  ) return;
-
-  try {
-
-    const token =
-  localStorage.getItem("token") ||
-  sessionStorage.getItem("token");
-
-    await axios.delete(
-      `https://student-internship-system.vercel.app/api/admin/company/${id}`,
-      {
-        headers: {
-          Authorization:
-            `Bearer ${token}`,
-        },
-      }
-    );
-
-    fetchRegisteredUsers();
-
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-
-  // Simple donut chart component for overview
+  // ---------- DONUT CHART (simplified) ----------
   const DonutChart = ({ studentsCount, companiesCount }) => {
     const total = studentsCount + companiesCount;
     if (total === 0) return <div className="donut-empty">No pending data</div>;
@@ -594,9 +530,10 @@ const removeCompany = async (id) => {
     return colors[Math.abs(hash) % colors.length];
   };
 
+  // ---------- RENDER ----------
   return (
-    <div className="shell">
-      {/* SIDEBAR */}
+    <div className={`shell ${darkMode ? "dark" : ""}`}>
+      {/* ===== SIDEBAR ===== */}
       <aside className={`sidebar ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
         <div className="sidebar-header">
           {sidebarOpen && (
@@ -644,7 +581,7 @@ const removeCompany = async (id) => {
         )}
       </aside>
 
-      {/* MAIN CONTENT */}
+      {/* ===== MAIN ===== */}
       <main className="main">
         <header className="topbar">
           <div>
@@ -654,29 +591,35 @@ const removeCompany = async (id) => {
               {activeTab === "companies" && "Company Approvals"}
               {activeTab === "manageStudents" && "Manage Students"}
               {activeTab === "manageCompanies" && "Manage Companies"}
-              {activeTab === "jobs" && "Internship Jobs"} 
+              {activeTab === "jobs" && "Internship Jobs"}
             </h1>
-            <p className="page-subtitle">Manages and review pending registrations with powerful tools</p>
+            <p className="page-subtitle">Manage and review pending registrations with powerful tools</p>
           </div>
           <div className="topbar-actions">
-  {activeTab !== "overview" && (
-    <>
-      <div className="search-wrap"> … </div>
-      <button className="export-btn" onClick={exportToCSV}>📎 Export</button>
-      <button className="refresh-btn" onClick={fetchData}>↻</button>
-    </>
-  )}
-
-  {activeTab === "overview" && (
-    <button
-      className="logout-btn"
-      onClick={handleLogout}
-      title="Sign out of admin panel"
-    >
-      🚪 Logout
-    </button>
-  )}
-</div>
+            {/* Dark mode toggle */}
+            <button className="theme-toggle" onClick={toggleDarkMode} title="Toggle dark mode">
+              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+            {activeTab !== "overview" && (
+              <>
+                <div className="search-wrap">
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
+                <button className="export-btn" onClick={exportToCSV}>📎 Export</button>
+                <button className="refresh-btn" onClick={fetchData}>↻</button>
+              </>
+            )}
+            {activeTab === "overview" && (
+              <button className="logout-btn" onClick={handleLogout} title="Sign out">
+                🚪 Logout
+              </button>
+            )}
+          </div>
         </header>
 
         <div className="content">
@@ -687,7 +630,7 @@ const removeCompany = async (id) => {
             </div>
           ) : (
             <>
-              {/* OVERVIEW TAB */}
+              {/* OVERVIEW */}
               {activeTab === "overview" && (
                 <div>
                   <div className="stats-grid">
@@ -710,15 +653,11 @@ const removeCompany = async (id) => {
                     ))}
                   </div>
                   {expiredJobs.length > 0 && (
-                  <div className="expired-alert">
-                    ⚠️ {expiredJobs.length}
-                    internship(s) have exceeded
-                    30 days.
-                  </div>
-                )}
-
+                    <div className="expired-alert">
+                      ⚠️ {expiredJobs.length} internship(s) have exceeded 30 days.
+                    </div>
+                  )}
                   <div className="overview-grid">
-                    {/* Donut Chart */}
                     <div className="panel">
                       <div className="panel-header">
                         <span className="panel-title">Pending Distribution</span>
@@ -731,8 +670,6 @@ const removeCompany = async (id) => {
                         <span><span className="legend-dot" style={{ background: "#8B5CF6" }}></span>Companies</span>
                       </div>
                     </div>
-
-                    {/* Recent Activity Feed */}
                     <div className="panel">
                       <div className="panel-header">
                         <span className="panel-title">Recent Activity</span>
@@ -756,8 +693,6 @@ const removeCompany = async (id) => {
                       </div>
                     </div>
                   </div>
-
-                  {/* Quick lists */}
                   <div className="quick-grid">
                     {[
                       { title: "Recent Students",  items: students.slice(0, 4),  key: "username", sub: "email", entity: "student"  },
@@ -791,7 +726,7 @@ const removeCompany = async (id) => {
                 </div>
               )}
 
-              {/* STUDENTS TAB */}
+              {/* STUDENTS PENDING */}
               {activeTab === "students" && (
                 <div className="panel">
                   <div className="panel-header">
@@ -868,7 +803,7 @@ const removeCompany = async (id) => {
                 </div>
               )}
 
-              {/* COMPANIES TAB */}
+              {/* COMPANIES PENDING */}
               {activeTab === "companies" && (
                 <div className="panel">
                   <div className="panel-header">
@@ -945,300 +880,120 @@ const removeCompany = async (id) => {
                 </div>
               )}
 
+              {/* MANAGE STUDENTS */}
               {activeTab === "manageStudents" && (
-
                 <div className="panel">
-
                   <div className="panel-header">
-                    <span className="panel-title">
-                      Registered Students
-                    </span>
+                    <span className="panel-title">Registered Students</span>
                   </div>
-
-
                   <table className="table">
-
                     <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>NIC</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                      </tr>
+                      <tr><th>Name</th><th>Email</th><th>NIC</th><th>Status</th><th>Action</th></tr>
                     </thead>
-
                     <tbody>
-
                       {registeredStudents.map(student => (
-
                         <tr key={student._id}>
-
                           <td>{student.username}</td>
-
                           <td>{student.email}</td>
-
                           <td>{student.nic}</td>
-
+                          <td>{student.blocked ? "Blocked" : "Active"}</td>
                           <td>
-                            {student.blocked
-                              ? "Blocked"
-                              : "Active"}
+                            {student.blocked ? (
+                              <button className="btn-approve" onClick={() => unblockStudent(student._id)}>Unblock</button>
+                            ) : (
+                              <button className="btn-reject" onClick={() => blockStudent(student._id)}>Block</button>
+                            )}
+                            <button className="btn-delete" onClick={() => removeStudent(student._id)}>Remove</button>
                           </td>
-
-                          <td>
-
-                            {
-                              student.blocked ? (
-                                <button
-                                  className="btn-approve"
-                                  onClick={() =>
-                                    unblockStudent(student._id)
-                                  }
-                                >
-                                  Unblock
-                                </button>
-                              ) : (
-                                <button
-                                  className="btn-reject"
-                                  onClick={() =>
-                                    blockStudent(student._id)
-                                  }
-                                >
-                                  Block
-                                </button>
-                              )
-                            }
-
-                            <button
-                              className="btn-delete"
-                              onClick={() =>
-                                removeStudent(student._id)
-                              }
-                            >
-                              Remove
-                            </button>
-
-                          </td>
-
                         </tr>
-
                       ))}
-
                     </tbody>
-
                   </table>
-
                 </div>
+              )}
 
-                )}
-
-                {activeTab === "manageCompanies" && (
-
-                  <div className="panel">
-
-                    <div className="panel-header">
-                      <span className="panel-title">
-                        Registered Companies
-                      </span>
-                    </div>
-
-                    <table className="table">
-
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Email</th>
-                          <th>Reg No</th>
-                          <th>Status</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-
-                        {registeredCompanies.map(company => (
-
-                          <tr key={company._id}>
-
-                            <td>{company.username}</td>
-
-                            <td>{company.email}</td>
-
-                            <td>{company.companyRegNo}</td>
-
-                            <td>
-                              {company.blocked
-                                ? "Blocked"
-                                : "Active"}
-                            </td>
-
-                            <td>
-
-                              {
-                                company.blocked ? (
-                                  <button
-                                    className="btn-approve"
-                                    onClick={() =>
-                                      unblockCompany(company._id)
-                                    }
-                                  >
-                                    Unblock
-                                  </button>
-                                ) : (
-                                  <button
-                                    className="btn-reject"
-                                    onClick={() =>
-                                      blockCompany(company._id)
-                                    }
-                                  >
-                                    Block
-                                  </button>
-                                )
-                              }
-
-                              <button
-                                className="btn-delete"
-                                onClick={() =>
-                                  removeCompany(company._id)
-                                }
-                              >
-                                Remove
-                              </button>
-
-                            </td>
-
-                          </tr>
-
-                        ))}
-
-                      </tbody>
-
-                    </table>
-
+              {/* MANAGE COMPANIES */}
+              {activeTab === "manageCompanies" && (
+                <div className="panel">
+                  <div className="panel-header">
+                    <span className="panel-title">Registered Companies</span>
                   </div>
-
-                  )}
-              
-             {activeTab === "jobs" && (
-
-              <div className="panel">
-
-                <div className="panel-header">
-                  <span className="panel-title">
-                    Internship Jobs
-                  </span>
-                </div>
-
-                {jobs.length === 0 ? (
-
-                  <div className="empty">
-                    No jobs available.
-                  </div>
-
-                ) : (
-
                   <table className="table">
-
                     <thead>
-                      <tr>
-                        <th>Company</th>
-                        <th>Title</th>
-                        <th>Category</th>
-                        <th>Posted Date</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                      </tr>
+                      <tr><th>Name</th><th>Email</th><th>Reg No</th><th>Status</th><th>Action</th></tr>
                     </thead>
-
                     <tbody>
-
-                      {jobs.map((job) => {
-
-                        const days =
-                          Math.floor(
-                            (new Date() -
-                              new Date(job.createdAt)) /
-                            (1000 * 60 * 60 * 24)
-                          );
-
-                        const expired = days >= 30;
-
-                        return (
-
-                          <tr key={job._id}>
-
-                            <td>{job.companyName}</td>
-
-                            <td>{job.title}</td>
-
-                            <td>{job.category}</td>
-
-                            <td>
-                              {new Date(
-                                job.createdAt
-                              ).toLocaleDateString()}
-                            </td>
-
-                            <td>
-
-                              {expired ? (
-                                <span
-                                  style={{
-                                    color: "red",
-                                    fontWeight: "bold",
-                                  }}
-                                >
-                                  Expired
-                                </span>
-                              ) : (
-                                <span
-                                  style={{
-                                    color: "green",
-                                    fontWeight: "bold",
-                                  }}
-                                >
-                                  Active
-                                </span>
-                              )}
-
-                            </td>
-
-                            <td>
-
-                              {expired && (
-                                <button
-                                  className="btn-reject"
-                                  onClick={() =>
-                                    deleteJob(job._id)
-                                  }
-                                >
-                                  Delete
-                                </button>
-                              )}
-
-                            </td>
-
-                          </tr>
-
-                        );
-                      })}
-
+                      {registeredCompanies.map(company => (
+                        <tr key={company._id}>
+                          <td>{company.username}</td>
+                          <td>{company.email}</td>
+                          <td>{company.companyRegNo}</td>
+                          <td>{company.blocked ? "Blocked" : "Active"}</td>
+                          <td>
+                            {company.blocked ? (
+                              <button className="btn-approve" onClick={() => unblockCompany(company._id)}>Unblock</button>
+                            ) : (
+                              <button className="btn-reject" onClick={() => blockCompany(company._id)}>Block</button>
+                            )}
+                            <button className="btn-delete" onClick={() => removeCompany(company._id)}>Remove</button>
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
-
                   </table>
+                </div>
+              )}
 
-                )}
-
-              </div>
-
+              {/* JOBS */}
+              {activeTab === "jobs" && (
+                <div className="panel">
+                  <div className="panel-header">
+                    <span className="panel-title">Internship Jobs</span>
+                  </div>
+                  {jobs.length === 0 ? (
+                    <div className="empty">No jobs available.</div>
+                  ) : (
+                    <table className="table">
+                      <thead>
+                        <tr><th>Company</th><th>Title</th><th>Category</th><th>Posted Date</th><th>Status</th><th>Action</th></tr>
+                      </thead>
+                      <tbody>
+                        {jobs.map((job) => {
+                          const days = Math.floor((new Date() - new Date(job.createdAt)) / (1000 * 60 * 60 * 24));
+                          const expired = days >= 30;
+                          return (
+                            <tr key={job._id}>
+                              <td>{job.companyName}</td>
+                              <td>{job.title}</td>
+                              <td>{job.category}</td>
+                              <td>{new Date(job.createdAt).toLocaleDateString()}</td>
+                              <td>
+                                {expired ? (
+                                  <span style={{ color: "red", fontWeight: "bold" }}>Expired</span>
+                                ) : (
+                                  <span style={{ color: "green", fontWeight: "bold" }}>Active</span>
+                                )}
+                              </td>
+                              <td>
+                                {expired && (
+                                  <button className="btn-reject" onClick={() => deleteJob(job._id)}>Delete</button>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
               )}
             </>
           )}
         </div>
       </main>
 
-      {/* APPROVE/REJECT MODAL */}
+      {/* ===== MODALS ===== */}
+      {/* Approve/Reject Modal */}
       {modal && (
         <div className="overlay" onClick={closeModal}>
           <div className="modal-box" onClick={e => e.stopPropagation()}>
@@ -1276,9 +1031,7 @@ const removeCompany = async (id) => {
               )}
             </div>
             <div className="modal-footer">
-              <button className="btn-cancel" onClick={closeModal} disabled={actionLoading}>
-                Cancel
-              </button>
+              <button className="btn-cancel" onClick={closeModal} disabled={actionLoading}>Cancel</button>
               <button
                 className={modal.type === "approve" ? "btn-confirm-approve" : "btn-confirm-reject"}
                 onClick={confirmAction}
@@ -1291,7 +1044,7 @@ const removeCompany = async (id) => {
         </div>
       )}
 
-      {/* DETAIL MODAL */}
+      {/* Detail Modal */}
       {detailModal && (
         <div className="overlay" onClick={() => setDetailModal(null)}>
           <div className="modal-box modal-wide" onClick={e => e.stopPropagation()}>
@@ -1330,7 +1083,7 @@ const removeCompany = async (id) => {
         </div>
       )}
 
-      {/* BULK REJECT MODAL */}
+      {/* Bulk Reject Modal */}
       {bulkRejectModal && (
         <div className="overlay" onClick={() => setBulkRejectModal(null)}>
           <div className="modal-box" onClick={e => e.stopPropagation()}>
@@ -1353,67 +1106,7 @@ const removeCompany = async (id) => {
         </div>
       )}
 
-
-
-
-                {selectedStudent && (
-            <div
-              className="overlay"
-              onClick={() =>
-                setSelectedStudent(null)
-              }
-            >
-              <div
-                className="modal-box"
-                onClick={(e) =>
-                  e.stopPropagation()
-                }
-              >
-                <h2>
-                  Student Details
-                </h2>
-
-                <p>
-                  <strong>Name:</strong>
-                  {" "}
-                  {selectedStudent.username}
-                </p>
-
-                <p>
-                  <strong>Email:</strong>
-                  {" "}
-                  {selectedStudent.email}
-                </p>
-
-                <p>
-                  <strong>NIC:</strong>
-                  {" "}
-                  {selectedStudent.nic}
-                </p>
-
-                <p>
-                  <strong>Status:</strong>
-                  {" "}
-                  {
-                    selectedStudent.blocked
-                      ? "Blocked"
-                      : "Active"
-                  }
-                </p>
-
-                <button
-                  className="btn-cancel"
-                  onClick={() =>
-                    setSelectedStudent(null)
-                  }
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          )}
-
-      {/* TOAST */}
+      {/* ===== TOAST ===== */}
       {toast && (
         <div className={`toast toast-${toast.type}`}>
           {toast.type === "success" ? "✅" : toast.type === "warning" ? "⚠️" : "❌"} {toast.msg}
@@ -1421,4 +1114,4 @@ const removeCompany = async (id) => {
       )}
     </div>
   );
-  }
+}

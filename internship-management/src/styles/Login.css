@@ -1,946 +1,616 @@
-/* ================= BACKDROP & CONTAINER ================= */
-.login-backdrop {
+/* ============================================================
+   LOGIN / REGISTER — Advanced UI
+   Dark mode · Glassmorphism · Fully Responsive
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+/* ============================================================
+   1. THEME TOKENS
+   ============================================================ */
+:root {
+  --violet: #6C5CE7;
+  --violet-strong: #5344D6;
+  --violet-soft: #A79BFF;
+  --teal: #00D2C6;
+  --teal-strong: #00A99E;
+  --coral: #FF6B6B;
+  --amber: #FFB020;
+  --green: #2ECC71;
+
+  --gradient-brand: linear-gradient(135deg, var(--violet) 0%, var(--teal) 100%);
+  --gradient-warm: linear-gradient(135deg, var(--coral) 0%, var(--amber) 100%);
+  --gradient-text: linear-gradient(135deg, var(--violet) 0%, var(--teal-strong) 100%);
+
+  --bg: #F5F6FC;
+  --bg-elevated: #FFFFFF;
+  --surface: rgba(255, 255, 255, 0.72);
+  --surface-strong: rgba(255, 255, 255, 0.92);
+  --surface-border: rgba(20, 22, 43, 0.08);
+  --surface-shadow: rgba(46, 41, 110, 0.10);
+
+  --text: #14162B;
+  --text-muted: #5B5F79;
+  --text-faint: #9497B8;
+
+  --input-bg: #FFFFFF;
+  --shadow-soft: 0 8px 24px rgba(46, 41, 110, 0.08);
+  --shadow-lift: 0 16px 40px rgba(46, 41, 110, 0.16);
+  --shadow-glow: 0 0 0 1px rgba(108, 92, 231, 0.15), 0 12px 32px rgba(108, 92, 231, 0.22);
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+}
+
+/* ----- DARK MODE ----- */
+.login-wrapper.dark {
+  --bg: #0A0C18;
+  --bg-elevated: #12142A;
+  --surface: rgba(255, 255, 255, 0.05);
+  --surface-strong: rgba(22, 24, 46, 0.88);
+  --surface-border: rgba(255, 255, 255, 0.09);
+  --surface-shadow: rgba(0, 0, 0, 0.45);
+
+  --text: #F2F3FA;
+  --text-muted: #A6A9C9;
+  --text-faint: #6E7194;
+
+  --input-bg: #171933;
+  --violet: #8B7CFF;
+  --violet-strong: #A79BFF;
+  --teal: #2FE8DB;
+  --coral: #FF8A8A;
+  --amber: #FFC65C;
+
+  --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lift: 0 20px 48px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 0 0 1px rgba(139, 124, 255, 0.25), 0 12px 36px rgba(139, 124, 255, 0.28);
+}
+
+/* ============================================================
+   2. BASE & OVERLAY
+   ============================================================ */
+.login-wrapper {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
-  z-index: 999;
-  animation: fadeIn 0.3s ease;
-}
-
-.login-page {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -45%);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%);
-  }
-}
-
-/* ================= MAIN CARD ================= */
-.main-card {
-  display: flex;
-  background: #ffffff;
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  position: relative;
-  max-width: 1000px;
-  width: 90vw;
-  max-height: 90vh;
-  transition: all 0.3s ease;
-}
-
-.login-card {
-  height: 550px;
-}
-
-.register-card {
-  height: 650px;
-  overflow-y: auto;
-}
-
-/* ================= CLOSE BUTTON ================= */
-.top-close {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 40px;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.95);
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: var(--bg);
+  font-family: var(--font-body);
+  color: var(--text);
+  transition: background 0.35s, color 0.35s;
+  z-index: 1000;
+  padding: 20px;
+  overflow-y: auto;
 }
 
-.top-close:hover {
-  background: #ff4757;
-  color: white;
-  transform: rotate(90deg);
-  box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
+.login-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(4px);
+  z-index: 999;
 }
 
-/* ================= LEFT SIDE (UPDATED & FIXED) ================= */
-.left-side {
-  flex: 1;
+.login-page {
   position: relative;
+  z-index: 1001;
+  width: 100%;
+  max-width: 1100px;
+}
+
+/* Floating theme toggle */
+.floating-theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1100;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--surface-strong);
+  border: 1px solid var(--surface-border);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.25s;
+  box-shadow: var(--shadow-soft);
+}
+.floating-theme-toggle:hover {
+  transform: rotate(-10deg) scale(1.05);
+  box-shadow: var(--shadow-glow);
+}
+
+/* ============================================================
+   3. MAIN CARD
+   ============================================================ */
+.main-card {
+  display: flex;
+  background: var(--surface-strong);
+  backdrop-filter: blur(16px);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  min-width: 400px;
+  box-shadow: var(--shadow-lift);
+  border: 1px solid var(--surface-border);
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Close button (when used as modal) */
+.top-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.top-close:hover {
+  background: var(--coral);
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+/* ============================================================
+   4. LEFT SIDE (image)
+   ============================================================ */
+.left-side {
+  flex: 0 0 45%;
+  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* Text එක Card එකේ පහළට වන්නට තැබීම */
-  padding: 45px;
-  background: #0f172a; /* Default dark background */
+  justify-content: center;
+  padding: 40px 30px;
+  background: var(--gradient-brand);
+  overflow: hidden;
 }
-
-/* Background Image Wrapper */
 .image-wrapper {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
+  inset: 0;
+  opacity: 0.15;
 }
-
-/* Image එක Cover වීම හා Hover Animation */
 .image-wrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 1; /* කලින් තිබූ 0.3 opacity එක ඉවත් කර ඇත */
-  transition: transform 0.6s ease;
 }
-
-.left-side:hover .image-wrapper img {
-  transform: scale(1.06); /* Mouse එක ගෙන ගිය විට Image එක මඳක් Zoom වේ */
-}
-
-/* Dark Gradient Overlay (Text කියවීමට පහසු කිරීමට) */
 .image-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(11, 16, 30, 0.756) 0%,
-    rgba(41, 48, 65, 0.234) 100%
-  );
-  z-index: 2; /* Image එකට උඩින්, Text එකට යටින් */
+  inset: 0;
+  background: linear-gradient(135deg, rgba(108,92,231,0.3), rgba(0,210,198,0.3));
 }
-
-/* Text Content (Glassmorphism Effect එක සමඟ කැපී පෙනෙන ලෙස) */
 .left-content {
   position: relative;
-  z-index: 3; /* Overlay එකට උඩින් පෙන්වීමට */
-  background: rgba(255, 255, 255, 0.12); /* ලස්සන වීදුරු පෙට්ටියක් වගේ */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 28px;
-  border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-  animation: contentFadeUp 0.6s ease;
+  z-index: 1;
+  color: #fff;
 }
-
 .left-content h2 {
   font-size: 28px;
   font-weight: 700;
-  color: #ffffff;
   margin-bottom: 12px;
-  line-height: 1.3;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6); /* Text එකට Shadow එකක් */
+  font-family: var(--font-display);
 }
-
 .left-content p {
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: 16px;
+  opacity: 0.85;
   line-height: 1.6;
-  margin: 0;
-  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
 }
 
-@keyframes contentFadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ================= RIGHT SIDE (FORM) ================= */
+/* ============================================================
+   5. RIGHT SIDE (form)
+   ============================================================ */
 .right-side {
   flex: 1;
-  padding: 50px 50px;
+  padding: 32px 36px;
   overflow-y: auto;
-  background: #ffffff;
+  background: var(--bg-elevated);
 }
 
-.right-side::-webkit-scrollbar {
-  width: 6px;
-}
-
-.right-side::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.right-side::-webkit-scrollbar-thumb {
-  background: #7c3aed;
-  border-radius: 10px;
-}
-
-/* ================= HEADER ================= */
 .header {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
-
 .header h1 {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 700;
-  color: #2d3436;
-  margin-bottom: 8px;
+  font-family: var(--font-display);
 }
-
 .header p {
-  color: #636e72;
   font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 4px;
 }
-
 .role-badge {
   display: inline-block;
-  background: linear-gradient(135deg, #7c3aed 0%, #1d4ed8 100%);
-  color: white;
-  padding: 8px 20px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 600;
-  margin-top: 10px;
+  background: var(--violet-soft);
+  color: var(--violet-strong);
+  padding: 4px 16px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 13px;
+  margin-top: 6px;
 }
 
-/* ================= ERROR BOX ================= */
-.error-box {
-  background: #ff4757;
-  color: white;
-  padding: 12px 16px;
-  border-radius: 12px;
+/* ----- Warning Banner ----- */
+.warning-banner {
+  display: flex;
+  gap: 12px;
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
   margin-bottom: 20px;
+  color: #78350f;
+}
+.dark .warning-banner {
+  background: #1e1b0e;
+  border-left-color: #fbbf24;
+  color: #fde68a;
+}
+.warning-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.warning-content h4 {
   font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.warning-content p {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ----- Error Box ----- */
+.error-box {
   display: flex;
   align-items: center;
   gap: 10px;
-  animation: shake 0.4s ease;
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 18px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.dark .error-box {
+  background: #2d1b1b;
+  color: #fca5a5;
 }
 
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  75% { transform: translateX(10px); }
-}
-
-/* ================= FORM AREA ================= */
+/* ----- Form ----- */
 .form-area {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 6px;
 }
-
-.register-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
 .input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  margin-bottom: 14px;
 }
-
 .input-group label {
-  font-size: 14px;
+  display: block;
+  font-size: 13px;
   font-weight: 600;
-  color: #2d3436;
+  margin-bottom: 4px;
+  color: var(--text-muted);
 }
-
 .input-group input,
 .input-group select {
-  padding: 12px 16px;
-  border: 2px solid #e1e8ed;
-  border-radius: 12px;
-  font-size: 14px;
-  transition: all 0.3s ease;
-  background: #f8f9fa;
   width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--surface-border);
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font-body);
+  transition: border 0.2s;
+  outline: none;
 }
-
 .input-group input:focus,
 .input-group select:focus {
-  outline: none;
-  border-color: #7c3aed;
-  background: white;
-  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+  border-color: var(--violet);
+  box-shadow: 0 0 0 3px rgba(108,92,231,0.15);
+}
+.input-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%239497B8'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
 }
 
-.input-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-/* ================= PASSWORD BOX ================= */
+/* Password box */
 .password-box {
   position: relative;
 }
-
 .password-box input {
-  width: 100%;
-  padding: 12px 50px 12px 16px;
-  border: 2px solid #e1e8ed;
-  border-radius: 12px;
-  font-size: 14px;
-  transition: all 0.3s ease;
-  background: #f8f9fa;
+  padding-right: 44px;
 }
-
-.password-box input:focus {
-  outline: none;
-  border-color: #7c3aed;
-  background: white;
-  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
-}
-
 .toggle-pass {
   position: absolute;
-  right: 16px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
-  color: #636e72;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
+  font-size: 18px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
 }
-
 .toggle-pass:hover {
-  color: #7c3aed;
+  opacity: 1;
+}
+.strength {
+  display: block;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 600;
 }
 
-/* ================= REMEMBER & FORGOT ================= */
+/* Input row (two columns) */
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Remember & forgot */
 .remember-forgot {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: -8px 0;
+  margin: 8px 0 18px;
 }
-
 .remember-box {
   display: flex;
   align-items: center;
   gap: 8px;
-  cursor: pointer;
   font-size: 14px;
-  color: #2d3436;
-}
-
-.remember-box input {
-  width: 18px;
-  height: 18px;
   cursor: pointer;
-  accent-color: #7c3aed;
 }
-
-.forgot-link {
-  font-size: 14px;
-  color: #7c3aed;
-  text-decoration: none;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.forgot-link:hover {
-  color: #1d4ed8;
-}
-
-/* ================= PASSWORD STRENGTH ================= */
-.strength {
-  font-size: 12px;
-  font-weight: 600;
-  margin-top: -12px;
-  padding-left: 4px;
-}
-
-/* ================= AUTH BUTTON ================= */
-.auth-btn {
-  background: linear-gradient(135deg, #7c3aed 0%, #1d4ed8 100%);
-  color: white;
-  border: none;
-  padding: 14px 28px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.auth-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(124, 58, 237, 0.5);
-}
-
-.auth-btn:active {
-  transform: translateY(0);
-}
-
-.auth-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.spinner {
+.remember-box input[type="checkbox"] {
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
+  accent-color: var(--violet);
 }
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* ================= SWITCH TEXT ================= */
-.switch-text {
-  text-align: center;
+.forgot-link {
   font-size: 14px;
-  color: #636e72;
-  margin-top: 8px;
-}
-
-.switch-text span {
-  color: #7c3aed;
+  color: var(--violet);
+  text-decoration: none;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
 }
-
-.switch-text span:hover {
-  color: #e00c0c;
+.forgot-link:hover {
   text-decoration: underline;
 }
 
-/* ================= ROLE MODAL ================= */
-.role-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
+/* Auth button */
+.auth-btn {
   width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(8px);
-  z-index: 1001;
+  padding: 14px;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-brand);
+  color: #0887c2;
+  font-weight: 700;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-glow);
+  transition: all 0.25s;
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: fadeIn 0.3s ease;
+  gap: 8px;
+  margin-top: 6px;
+}
+.auth-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lift);
+}
+.auth-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-.role-modal {
-  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.role-box {
-  background: white;
-  padding: 40px;
-  border-radius: 24px;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-.role-box h2 {
-  font-size: 28px;
-  font-weight: 700;
-  color: #2d3436;
-  margin-bottom: 8px;
+/* Switch text */
+.switch-text {
   text-align: center;
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 16px;
+}
+.switch-text span {
+  color: var(--violet);
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.switch-text span:hover {
+  color: var(--violet-strong);
+  text-decoration: underline;
 }
 
+/* ============================================================
+   6. ROLE MODAL
+   ============================================================ */
+.role-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+.role-modal {
+  background: var(--bg-elevated);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: var(--shadow-lift);
+  border: 1px solid var(--surface-border);
+}
+.role-box h2 {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 4px;
+}
 .role-subtitle {
   text-align: center;
-  color: #636e72;
-  font-size: 14px;
-  margin-bottom: 30px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
 }
-
 .role-buttons {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-bottom: 20px;
+  gap: 14px;
 }
-
 .role-btn {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 20px 24px;
-  border: 2px solid #e1e8ed;
-  border-radius: 16px;
-  background: white;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--surface-border);
+  background: var(--surface);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s;
   text-align: left;
 }
-
 .role-btn:hover {
-  border-color: #7c3aed;
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.05) 0%, rgba(192, 38, 211, 0.05) 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.2);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-soft);
 }
-
+.role-btn.company-btn:hover {
+  border-color: var(--teal);
+}
+.role-btn.student-btn:hover {
+  border-color: var(--violet);
+}
 .role-icon {
-  font-size: 48px;
-  min-width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #7c3aed 0%, #1d4ed8 100%);
-  border-radius: 12px;
+  font-size: 32px;
 }
-
 .role-info h3 {
   font-size: 18px;
-  font-weight: 600;
-  color: #2d3436;
-  margin-bottom: 4px;
+  margin: 0;
 }
-
 .role-info p {
   font-size: 13px;
-  color: #636e72;
+  color: var(--text-muted);
+  margin: 2px 0 0;
 }
-
 .cancel-btn {
+  display: block;
   width: 100%;
+  margin-top: 16px;
   padding: 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--surface-border);
   background: transparent;
-  border: 2px solid #e1e8ed;
-  border-radius: 12px;
-  font-size: 14px;
+  color: var(--text-muted);
   font-weight: 600;
-  color: #636e72;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s;
 }
-
 .cancel-btn:hover {
-  background: #f8f9fa;
-  border-color: #636e72;
-  color: #2d3436;
+  background: var(--surface);
 }
 
-/* ================= RESPONSIVE ================= */
-@media (max-width: 968px) {
+/* ============================================================
+   7. RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
   .main-card {
     flex-direction: column;
-    width: 95vw;
     max-height: 95vh;
   }
-
   .left-side {
-    min-width: auto;
-    min-height: 240px;
-    padding: 24px;
-    justify-content: center;
+    flex: none;
+    padding: 30px 24px;
+    min-height: 180px;
   }
-
-  .left-content {
-    padding: 20px;
-  }
-
   .left-content h2 {
     font-size: 22px;
   }
-  
   .left-content p {
-    font-size: 13px;
+    font-size: 14px;
   }
-
   .right-side {
-    padding: 30px 24px;
+    padding: 24px 20px;
   }
-
   .input-row {
     grid-template-columns: 1fr;
+    gap: 0;
   }
-
-  .login-card,
-  .register-card {
-    height: auto;
-    max-height: 95vh;
+  .floating-theme-toggle {
+    top: 12px;
+    right: 12px;
+    width: 38px;
+    height: 38px;
   }
 }
 
 @media (max-width: 480px) {
+  .login-wrapper {
+    padding: 10px;
+  }
   .right-side {
-    padding: 24px 20px;
+    padding: 18px 14px;
   }
-
   .header h1 {
-    font-size: 24px;
+    font-size: 22px;
   }
-
-  .role-box {
-    padding: 30px 24px;
-  }
-
-  .role-btn {
-    padding: 16px 20px;
-  }
-
-  .role-icon {
-    font-size: 36px;
-    min-width: 50px;
-    height: 50px;
-  }
-}
-
-/* =======================================================
-   MOBILE RESPONSIVE DESIGN
-   Add this at the END of Login.css
-======================================================= */
-
-/* Tablet */
-@media screen and (max-width: 768px) {
-
-  .login-page{
-    width:100%;
-    height:100%;
-    top:0;
-    left:0;
-    transform:none;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:12px;
-  }
-
-  .main-card{
-    width:100%;
-    max-width:100%;
-    height:auto;
-    max-height:95vh;
-    border-radius:18px;
-    flex-direction:column;
-    overflow-y:auto;
-  }
-
-  .login-card,
-  .register-card{
-    height:auto;
-  }
-
-  /* Hide Image Section */
-  .left-side{
-    display:none;
-  }
-
-  .right-side{
-    width:100%;
-    padding:25px 20px;
-  }
-
-  .header{
-    text-align:center;
-    margin-bottom:20px;
-  }
-
-  .header h1{
-    font-size:24px;
-  }
-
-  .header p{
-    font-size:14px;
-  }
-
-  .input-row{
-    display:flex;
-    flex-direction:column;
-    gap:15px;
-  }
-
-  .input-group input,
-  .input-group select{
-    font-size:15px;
-    padding:14px;
-  }
-
-  .password-box input{
-    padding-right:48px;
-  }
-
-  .remember-forgot{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:10px;
-  }
-
-  .auth-btn{
-    width:100%;
-    padding:15px;
-    font-size:16px;
-  }
-
-  .switch-text{
-    text-align:center;
-    font-size:14px;
-  }
-
-  .top-close{
-    width:36px;
-    height:36px;
-    top:12px;
-    right:12px;
-  }
-
-  .role-box{
-    width:95%;
-    max-width:420px;
-    padding:25px;
-  }
-
-  .role-buttons{
-    gap:12px;
-  }
-
-  .role-btn{
-    padding:16px;
-  }
-
-  .role-icon{
-    width:50px;
-    height:50px;
-    min-width:50px;
-    font-size:28px;
-  }
-
-}
-
-/* Mobile */
-@media screen and (max-width:480px){
-
-  .login-page{
-    padding:8px;
-  }
-
-  .main-card{
-    border-radius:15px;
-  }
-
-  .right-side{
-    padding:20px 16px;
-  }
-
-  .header h1{
-    font-size:21px;
-  }
-
-  .header p{
-    font-size:13px;
-  }
-
-  .role-badge{
-    font-size:12px;
-    padding:6px 14px;
-  }
-
-  .input-group label{
-    font-size:13px;
-  }
-
-  .input-group input,
-  .input-group select{
-    font-size:14px;
-    padding:13px;
-  }
-
-  .password-box input{
-    padding-right:45px;
-  }
-
-  .toggle-pass{
-    right:14px;
-  }
-
-  .auth-btn{
-    font-size:15px;
-    padding:14px;
-  }
-
-  .switch-text{
-    font-size:13px;
-  }
-
-  .remember-box{
-    font-size:13px;
-  }
-
-  .forgot-link{
-    font-size:13px;
-  }
-
-  .error-box{
-    font-size:13px;
-    padding:10px 12px;
-  }
-
-  .role-box{
-    padding:20px;
-    border-radius:16px;
-  }
-
-  .role-box h2{
-    font-size:22px;
-  }
-
-  .role-subtitle{
-    font-size:13px;
-  }
-
-  .role-btn{
-    gap:12px;
-    padding:14px;
-  }
-
-  .role-icon{
-    width:45px;
-    height:45px;
-    min-width:45px;
-    font-size:24px;
-  }
-
-  .role-info h3{
-    font-size:16px;
-  }
-
-  .role-info p{
-    font-size:12px;
-  }
-
-}
-
-/* Small Phones */
-@media screen and (max-width:360px){
-
-  .right-side{
-    padding:16px 12px;
-  }
-
-  .header h1{
-    font-size:18px;
-  }
-
-  .input-group input,
-  .input-group select{
-    font-size:13px;
-    padding:12px;
-  }
-
-  .auth-btn{
-    font-size:14px;
-    padding:13px;
-  }
-
-  .switch-text{
-    font-size:12px;
-  }
-
-  .remember-box{
-    font-size:12px;
-  }
-
-  .forgot-link{
-    font-size:12px;
-  }
-
-  .role-box{
-    padding:18px;
-  }
-
-}
-
-
-/* Warning Banner */
-.warning-banner {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  background-color: #fef3c7;
-  border-left: 5px solid #f59e0b;
-  padding: 14px 18px;
-  border-radius: 8px;
-  margin-bottom: 18px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.warning-icon {
-  font-size: 26px;
-  line-height: 1.2;
-  flex-shrink: 0;
-}
-
-.warning-content h4 {
-  margin: 0 0 4px 0;
-  font-size: 15px;
-  font-weight: 700;
-  color: #92400e;
-}
-
-.warning-content p {
-  margin: 0;
-  font-size: 13.5px;
-  line-height: 1.6;
-  color: #78350f;
-}
-
-.warning-content strong {
-  color: #b45309;
-}
-
-.warning-content em {
-  color: #d97706;
-  font-style: normal;
-}
-
-/* Responsive */
-@media (max-width: 600px) {
   .warning-banner {
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    gap: 6px;
+    padding: 12px;
+  }
+  .role-modal {
+    padding: 20px;
+  }
+  .role-btn {
+    padding: 14px 16px;
+  }
+  .top-close {
+    width: 30px;
+    height: 30px;
+    top: 8px;
+    right: 8px;
+  }
+  .auth-btn {
+    font-size: 15px;
+    padding: 12px;
   }
 }

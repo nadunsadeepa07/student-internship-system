@@ -18,33 +18,34 @@ import WaitingApproval from "./pages/WaitingApproval";
 import AdminLoginPage from "./pages/AdminLoginPage";
 
 
+
+
+
 function App() {
    const [chatOpen, setChatOpen] = useState(false);
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/search" element={<InternshipSearch />} />
-        <Route path="/testimonials" element={<Testimonials />} />
-        <Route path="/student" element={<StudentDashboard />} />
-        <Route path="/company" element={<CompanyDashboard />} />
-        <Route path="/apply" element={<Apply />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/job/:id" element={<JobDetails />} />
-        <Route path="/cvbuilder" element={<CVBuilder />} />
-       
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/shared-cv/:token" element={<SharedCVPage />} />
-        <Route path="/waiting" element={<WaitingApproval />} />
-        <Route path="/admin-login" element={<AdminLoginPage />} />
-      
+   
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/search" element={<InternshipSearch />} />
+          <Route path="/testimonials" element={<Testimonials />} />
+          <Route path="/student" element={<StudentDashboard />} />
+          <Route path="/company" element={<CompanyDashboard />} />
+          <Route path="/apply" element={<Apply />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/job/:id" element={<JobDetails />} />
+          <Route path="/cvbuilder" element={<CVBuilder />} />
+         
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/shared-cv/:token" element={<SharedCVPage />} />
+          <Route path="/waiting" element={<WaitingApproval />} />
+          <Route path="/admin-login" element={<AdminLoginPage />} />
+        
 
-      </Routes>
-
-       
-
-
-    </Router>
+        </Routes>
+      </Router>
+    
   );
 }
 

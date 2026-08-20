@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import JobDetails from "./JobDetails";
 import Login from "./Login";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Sun, Moon } from "lucide-react";
 import "../styles/InternshipSearch.css";
 import { getStoredUser, safeGetJSON } from "../utils/storage";
 
@@ -24,6 +24,9 @@ function InternshipSearch() {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
 
+  // ✅ Dark Mode state
+  const [darkMode, setDarkMode] = useState(false);
+
   const itemsPerPage = 12;
 
   useEffect(() => {
@@ -37,6 +40,27 @@ function InternshipSearch() {
     const saved = safeGetJSON("savedJobs", []);
     setSavedJobs(saved);
   }, []);
+
+  // ✅ Load saved theme (or system preference) on first mount
+  useEffect(() => {
+    const stored = localStorage.getItem("theme");
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialDark = stored ? stored === "dark" : prefersDark;
+    setDarkMode(initialDark);
+  }, []);
+
+  // ✅ Apply theme to <html> so it cascades globally, and persist it
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "data-theme",
+      darkMode ? "dark" : "light"
+    );
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
+
+  const toggleDarkMode = () => setDarkMode((prev) => !prev);
 
   const toggleSaveJob = (id) => {
     let updated = savedJobs.includes(id)
@@ -130,7 +154,7 @@ function InternshipSearch() {
     // (Company login විටදී role field set වෙන බව guarantee කරන්න)
     console.log("Case 4: No recognizable role found");
     console.log("Full user object:", JSON.stringify(user, null, 2));
-    
+
     // Default: Student ලෙස allow කරන්න
     // (ඔබේ Login.jsx හි company users සඳහා role="company" set කරන්නේ නම්
     //  company users Case 2 හිදී catch වේ)
@@ -345,6 +369,18 @@ function InternshipSearch() {
         </div>
         <div className="nav-links"></div>
         <div className="nav-auth-section">
+          {/* ✅ Dark Mode Toggle */}
+          <button
+            className="theme-toggle-btn"
+            onClick={toggleDarkMode}
+            aria-label="Toggle dark mode"
+            title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            <span className={`theme-toggle-icon ${darkMode ? "spin-in" : ""}`}>
+              {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+            </span>
+          </button>
+
           {currentUser ? (
             <div className="user-info-nav">
               <div className="user-avatar-nav">
