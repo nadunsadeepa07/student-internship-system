@@ -1,42 +1,47 @@
 /* ============================================================
-   LOGIN / REGISTER — Advanced UI
+   LOGIN / REGISTER — Professional Green Theme
    Dark mode · Glassmorphism · Fully Responsive
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 /* ============================================================
-   1. THEME TOKENS
+   1. THEME TOKENS — Green Palette
    ============================================================ */
 :root {
-  --violet: #6C5CE7;
-  --violet-strong: #5344D6;
-  --violet-soft: #A79BFF;
-  --teal: #00D2C6;
-  --teal-strong: #00A99E;
-  --coral: #FF6B6B;
-  --amber: #FFB020;
-  --green: #2ECC71;
+  /* Primary greens — deeper, corporate */
+  --green: #1E7B4F;
+  --green-strong: #145A39;
+  --green-soft: #85C9A5;
+  --sage: #4A9E86;
+  --sage-strong: #2D7D6A;
 
-  --gradient-brand: linear-gradient(135deg, var(--violet) 0%, var(--teal) 100%);
-  --gradient-warm: linear-gradient(135deg, var(--coral) 0%, var(--amber) 100%);
-  --gradient-text: linear-gradient(135deg, var(--violet) 0%, var(--teal-strong) 100%);
+  /* Accent variants */
+  --green-light: #A8D5BA;
+  --green-dark: #0F4A2E;
 
-  --bg: #F5F6FC;
+  /* Gradients – all green */
+  --gradient-brand: linear-gradient(135deg, var(--green) 0%, var(--sage) 100%);
+  --gradient-warm: linear-gradient(135deg, var(--sage) 0%, var(--green-strong) 100%);
+  --gradient-text: linear-gradient(135deg, var(--green-strong) 0%, var(--sage-strong) 100%);
+
+  /* Surfaces */
+  --bg: #F3F8F5;
   --bg-elevated: #FFFFFF;
   --surface: rgba(255, 255, 255, 0.72);
   --surface-strong: rgba(255, 255, 255, 0.92);
-  --surface-border: rgba(20, 22, 43, 0.08);
-  --surface-shadow: rgba(46, 41, 110, 0.10);
+  --surface-border: rgba(18, 38, 28, 0.08);
+  --surface-shadow: rgba(18, 60, 42, 0.10);
 
-  --text: #14162B;
-  --text-muted: #5B5F79;
-  --text-faint: #9497B8;
+  /* Text */
+  --text: #1A2E24;
+  --text-muted: #4B6B5A;
+  --text-faint: #8AA89A;
 
   --input-bg: #FFFFFF;
-  --shadow-soft: 0 8px 24px rgba(46, 41, 110, 0.08);
-  --shadow-lift: 0 16px 40px rgba(46, 41, 110, 0.16);
-  --shadow-glow: 0 0 0 1px rgba(108, 92, 231, 0.15), 0 12px 32px rgba(108, 92, 231, 0.22);
+  --shadow-soft: 0 8px 24px rgba(18, 60, 42, 0.08);
+  --shadow-lift: 0 16px 40px rgba(18, 60, 42, 0.16);
+  --shadow-glow: 0 0 0 1px rgba(30, 123, 79, 0.15), 0 12px 32px rgba(30, 123, 79, 0.22);
 
   --font-display: 'Space Grotesk', sans-serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
@@ -48,27 +53,29 @@
 
 /* ----- DARK MODE ----- */
 .login-wrapper.dark {
-  --bg: #0A0C18;
-  --bg-elevated: #12142A;
+  --bg: #0B1A14;
+  --bg-elevated: #12261C;
   --surface: rgba(255, 255, 255, 0.05);
-  --surface-strong: rgba(22, 24, 46, 0.88);
+  --surface-strong: rgba(18, 38, 28, 0.88);
   --surface-border: rgba(255, 255, 255, 0.09);
   --surface-shadow: rgba(0, 0, 0, 0.45);
 
-  --text: #F2F3FA;
-  --text-muted: #A6A9C9;
-  --text-faint: #6E7194;
+  --text: #E8F5EE;
+  --text-muted: #A0C0B0;
+  --text-faint: #6B8F7A;
 
-  --input-bg: #171933;
-  --violet: #8B7CFF;
-  --violet-strong: #A79BFF;
-  --teal: #2FE8DB;
-  --coral: #FF8A8A;
-  --amber: #FFC65C;
+  --input-bg: #1B3428;
+
+  /* Brighter greens for dark mode */
+  --green: #4CD98A;
+  --green-strong: #86E8AE;
+  --sage: #4FE0CB;
+  --green-light: #A8F0C8;
+  --green-dark: #2C8A5A;
 
   --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.35);
   --shadow-lift: 0 20px 48px rgba(0, 0, 0, 0.55);
-  --shadow-glow: 0 0 0 1px rgba(139, 124, 255, 0.25), 0 12px 36px rgba(139, 124, 255, 0.28);
+  --shadow-glow: 0 0 0 1px rgba(76, 217, 138, 0.25), 0 12px 36px rgba(76, 217, 138, 0.28);
 }
 
 /* ============================================================
@@ -164,7 +171,7 @@
   transition: all 0.2s;
 }
 .top-close:hover {
-  background: var(--coral);
+  background: var(--green-strong);
   color: #fff;
   transform: rotate(90deg);
 }
@@ -195,7 +202,7 @@
 .image-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(108,92,231,0.3), rgba(0,210,198,0.3));
+  background: linear-gradient(135deg, rgba(30,123,79,0.3), rgba(74,158,134,0.3));
 }
 .left-content {
   position: relative;
@@ -239,8 +246,8 @@
 }
 .role-badge {
   display: inline-block;
-  background: var(--violet-soft);
-  color: var(--violet-strong);
+  background: var(--green-soft);
+  color: var(--green-strong);
   padding: 4px 16px;
   border-radius: var(--radius-pill);
   font-weight: 700;
@@ -328,8 +335,8 @@
 }
 .input-group input:focus,
 .input-group select:focus {
-  border-color: var(--violet);
-  box-shadow: 0 0 0 3px rgba(108,92,231,0.15);
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(30,123,79,0.15);
 }
 .input-group select {
   appearance: none;
@@ -390,11 +397,11 @@
 .remember-box input[type="checkbox"] {
   width: 16px;
   height: 16px;
-  accent-color: var(--violet);
+  accent-color: var(--green);
 }
 .forgot-link {
   font-size: 14px;
-  color: var(--violet);
+  color: var(--green);
   text-decoration: none;
   font-weight: 600;
 }
@@ -408,7 +415,7 @@
   padding: 14px;
   border-radius: var(--radius-pill);
   background: var(--gradient-brand);
-  color: #0887c2;
+  color: #fff;
   font-weight: 700;
   font-size: 16px;
   border: none;
@@ -449,13 +456,13 @@
   margin-top: 16px;
 }
 .switch-text span {
-  color: var(--violet);
+  color: var(--green);
   font-weight: 700;
   cursor: pointer;
   transition: color 0.2s;
 }
 .switch-text span:hover {
-  color: var(--violet-strong);
+  color: var(--green-strong);
   text-decoration: underline;
 }
 
@@ -514,10 +521,10 @@
   box-shadow: var(--shadow-soft);
 }
 .role-btn.company-btn:hover {
-  border-color: var(--teal);
+  border-color: var(--sage);
 }
 .role-btn.student-btn:hover {
-  border-color: var(--violet);
+  border-color: var(--green);
 }
 .role-icon {
   font-size: 32px;

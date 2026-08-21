@@ -321,7 +321,7 @@ html[data-theme='dark'] {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
+  width: 150px;
   height: 40px;
   border-radius: 50%;
   background: var(--gradient-warm);   /* now a green gradient */

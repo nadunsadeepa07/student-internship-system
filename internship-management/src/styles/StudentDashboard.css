@@ -1,37 +1,42 @@
 /* ============================================================
-   STUDENT DASHBOARD — Advanced UI
+   STUDENT DASHBOARD — Professional Green Theme
    Dark mode · Glassmorphism · Fully Responsive
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 /* ============================================================
-   1. THEME TOKENS
+   1. THEME TOKENS — Green Palette
    ============================================================ */
 :root {
-  --violet: #6C5CE7;
-  --violet-strong: #5344D6;
-  --violet-soft: #A79BFF;
-  --teal: #00D2C6;
-  --teal-strong: #00A99E;
-  --coral: #FF6B6B;
-  --amber: #FFB020;
-  --green: #2ECC71;
+  /* Primary greens — deeper, corporate */
+  --green: #1E7B4F;
+  --green-strong: #145A39;
+  --green-soft: #85C9A5;
+  --sage: #4A9E86;
+  --sage-strong: #2D7D6A;
 
-  --gradient-brand: linear-gradient(135deg, var(--violet) 0%, var(--teal) 100%);
-  --gradient-warm: linear-gradient(135deg, var(--coral) 0%, var(--amber) 100%);
-  --gradient-text: linear-gradient(135deg, var(--violet) 0%, var(--teal-strong) 100%);
+  /* Accent variants */
+  --green-light: #A8D5BA;
+  --green-dark: #0F4A2E;
 
-  --bg: #F5F6FC;
+  /* Gradients – all green */
+  --gradient-brand: linear-gradient(135deg, var(--green) 0%, var(--sage) 100%);
+  --gradient-warm: linear-gradient(135deg, var(--sage) 0%, var(--green-strong) 100%);
+  --gradient-text: linear-gradient(135deg, var(--green-strong) 0%, var(--sage-strong) 100%);
+
+  /* Surfaces */
+  --bg: #F3F8F5;
   --bg-elevated: #FFFFFF;
   --surface: rgba(255, 255, 255, 0.72);
   --surface-strong: rgba(255, 255, 255, 0.92);
-  --surface-border: rgba(20, 22, 43, 0.08);
-  --surface-shadow: rgba(46, 41, 110, 0.10);
+  --surface-border: rgba(18, 38, 28, 0.08);
+  --surface-shadow: rgba(18, 60, 42, 0.10);
 
-  --text: #14162B;
-  --text-muted: #5B5F79;
-  --text-faint: #9497B8;
+  /* Text */
+  --text: #1A2E24;
+  --text-muted: #4B6B5A;
+  --text-faint: #8AA89A;
 
   --input-bg: #FFFFFF;
   --nav-bg: rgba(255, 255, 255, 0.78);
@@ -44,38 +49,39 @@
   --radius-lg: 24px;
   --radius-pill: 999px;
 
-  --shadow-soft: 0 8px 24px rgba(46, 41, 110, 0.08);
-  --shadow-lift: 0 16px 40px rgba(46, 41, 110, 0.16);
-  --shadow-glow: 0 0 0 1px rgba(108, 92, 231, 0.15), 0 12px 32px rgba(108, 92, 231, 0.22);
+  --shadow-soft: 0 8px 24px rgba(18, 60, 42, 0.08);
+  --shadow-lift: 0 16px 40px rgba(18, 60, 42, 0.16);
+  --shadow-glow: 0 0 0 1px rgba(30, 123, 79, 0.15), 0 12px 32px rgba(30, 123, 79, 0.22);
 
   --sidebar-width: 280px;
 }
 
 /* ----- DARK MODE ----- */
 .sd-wrapper.dark-mode {
-  --bg: #0A0C18;
-  --bg-elevated: #12142A;
+  --bg: #0B1A14;
+  --bg-elevated: #12261C;
   --surface: rgba(255, 255, 255, 0.05);
-  --surface-strong: rgba(22, 24, 46, 0.88);
+  --surface-strong: rgba(18, 38, 28, 0.88);
   --surface-border: rgba(255, 255, 255, 0.09);
   --surface-shadow: rgba(0, 0, 0, 0.45);
 
-  --text: #F2F3FA;
-  --text-muted: #A6A9C9;
-  --text-faint: #6E7194;
+  --text: #E8F5EE;
+  --text-muted: #A0C0B0;
+  --text-faint: #6B8F7A;
 
-  --input-bg: #171933;
-  --nav-bg: rgba(10, 12, 24, 0.72);
+  --input-bg: #1B3428;
+  --nav-bg: rgba(11, 26, 20, 0.72);
 
-  --violet: #8B7CFF;
-  --violet-strong: #A79BFF;
-  --teal: #2FE8DB;
-  --coral: #FF8A8A;
-  --amber: #FFC65C;
+  /* Brighter greens for dark mode */
+  --green: #4CD98A;
+  --green-strong: #86E8AE;
+  --sage: #4FE0CB;
+  --green-light: #A8F0C8;
+  --green-dark: #2C8A5A;
 
   --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.35);
   --shadow-lift: 0 20px 48px rgba(0, 0, 0, 0.55);
-  --shadow-glow: 0 0 0 1px rgba(139, 124, 255, 0.25), 0 12px 36px rgba(139, 124, 255, 0.28);
+  --shadow-glow: 0 0 0 1px rgba(76, 217, 138, 0.25), 0 12px 36px rgba(76, 217, 138, 0.28);
 }
 
 /* ============================================================
@@ -183,7 +189,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 0 3px var(--violet-soft);
+  box-shadow: 0 0 0 3px var(--green-soft);
 }
 .sd-profile-card h3 {
   font-size: 16px;
@@ -274,7 +280,7 @@
   width: 100%;
 }
 .logout-btn {
-  background: var(--coral);
+  background: var(--green-strong);
   color: #fff;
   opacity: 0.85;
 }
@@ -288,8 +294,8 @@
   color: var(--text);
 }
 .theme-togglee-btn:hover {
-  border-color: var(--violet);
-  color: var(--violet);
+  border-color: var(--green);
+  color: var(--green);
 }
 
 /* ----- Sidebar Toggle (mobile) ----- */
@@ -382,7 +388,7 @@
   box-shadow: var(--shadow-lift);
 }
 .sd-stat-card svg {
-  color: var(--violet);
+  color: var(--green);
   margin-bottom: 6px;
 }
 .sd-stat-card h1 {
@@ -398,8 +404,8 @@
   font-weight: 600;
 }
 .sd-stat-card.accepted svg { color: var(--green); }
-.sd-stat-card.pending svg { color: var(--amber); }
-.sd-stat-card.rejected svg { color: var(--coral); }
+.sd-stat-card.pending svg { color: var(--green-light); }
+.sd-stat-card.rejected svg { color: var(--green-strong); }
 
 /* ----- Search Box ----- */
 .sd-search-box {
@@ -446,7 +452,7 @@
   min-width: 160px;
 }
 .sd-dropdown:focus {
-  border-color: var(--violet);
+  border-color: var(--green);
 }
 
 /* ----- Jobs Section ----- */
@@ -460,8 +466,8 @@
   font-size: 22px;
 }
 .sd-section-header span {
-  background: var(--violet-soft);
-  color: var(--violet-strong);
+  background: var(--green-soft);
+  color: var(--green-strong);
   padding: 4px 16px;
   border-radius: var(--radius-pill);
   font-weight: 700;
@@ -486,7 +492,7 @@
 .jobb-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-lift);
-  border-color: var(--violet-soft);
+  border-color: var(--green-soft);
 }
 .jobb-left {
   flex: 1;
@@ -515,16 +521,16 @@
   border: 1px solid var(--surface-border);
 }
 .meta-tag.category {
-  background: var(--violet-soft);
-  color: #0A0C18;
+  background: var(--green-soft);
+  color: #653400;
 }
 .meta-tag.salary {
-  background: var(--teal-strong);
+  background: var(--sage-strong);
   color: #fff;
 }
 .meta-tag.vacancy {
-  background: var(--amber);
-  color: #fff;
+  background: var(--green-light);
+  color: var(--green-dark);
 }
 .jobb-right {
   display: flex;
@@ -538,7 +544,7 @@
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: var(--amber);
+  color: var(--green-light);
   transition: transform 0.2s;
 }
 .bookmark-btn:hover {
@@ -594,8 +600,8 @@
   box-shadow: var(--shadow-soft);
 }
 .notify-card--accepted { border-left: 4px solid var(--green); }
-.notify-card--pending { border-left: 4px solid var(--amber); }
-.notify-card--rejected { border-left: 4px solid var(--coral); }
+.notify-card--pending { border-left: 4px solid var(--green-light); }
+.notify-card--rejected { border-left: 4px solid var(--green-strong); }
 
 .notify-card__header {
   display: flex;
@@ -641,11 +647,11 @@
   color: #fff;
 }
 .notify-badge--pending {
-  background: var(--amber);
-  color: #fff;
+  background: var(--green-light);
+  color: #7a1f00;
 }
 .notify-badge--rejected {
-  background: var(--coral);
+  background: var(--green-strong);
   color: #fff;
 }
 .notify-dot {
@@ -675,8 +681,8 @@
   border-radius: var(--radius-sm);
   font-weight: 600;
 }
-.notify-message--rejected { color: var(--coral); }
-.notify-message--pending { color: var(--amber); }
+.notify-message--rejected { color: var(--green-strong); }
+.notify-message--pending { color: var(--green-light); }
 
 /* ============================================================
    5. RESPONSIVE

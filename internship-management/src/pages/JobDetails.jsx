@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Login from "./Login";
+import { Moon, Sun, ArrowLeft, Bookmark, Check, X } from "lucide-react";
 import "../styles/JobDetails.css";
 
 function JobDetails({ id: modalId, isModal }) {
@@ -12,15 +13,37 @@ function JobDetails({ id: modalId, isModal }) {
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
 
-  // ✅ Login Modal State
+  // Login Modal State
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [pendingApplyJobId, setPendingApplyJobId] = useState(null);
 
-  // ✅ Error Modal State
+  // Error Modal State
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  // ---------- DARK MODE ----------
+  useEffect(() => {
+    const stored = localStorage.getItem("jobDetailsTheme");
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialDark = stored ? stored === "dark" : prefersDark;
+    setDarkMode(initialDark);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "data-theme",
+      darkMode ? "dark" : "light"
+    );
+    localStorage.setItem("jobDetailsTheme", darkMode ? "dark" : "light");
+  }, [darkMode]);
+
+  const toggleDarkMode = () => setDarkMode((prev) => !prev);
+
+  // ---------- FETCH JOB ----------
   useEffect(() => {
     axios
       .get(`https://student-internship-system.vercel.app/api/jobs/${id}`)
@@ -34,7 +57,7 @@ function JobDetails({ id: modalId, isModal }) {
       });
   }, [id]);
 
-  // ✅ Helper - Company user දැයි check කරයි
+  // ---------- HELPERS ----------
   const isCompanyUser = (user) => {
     if (!user) return false;
     const role = (
@@ -49,7 +72,6 @@ function JobDetails({ id: modalId, isModal }) {
     return role === "company";
   };
 
-  // ✅ Helper - Student user දැයි check කරයි
   const isStudentUser = (user) => {
     if (!user) return false;
     const role = (
@@ -64,18 +86,16 @@ function JobDetails({ id: modalId, isModal }) {
     return role === "student";
   };
 
-  // ✅ Main Apply Handler - Role Check සහිතව
+  // ---------- APPLY HANDLER ----------
   const handleApplyClick = (jobId) => {
     const userStr = localStorage.getItem("user");
 
-    // Case 1: Login නොවූ user → Login Modal show කරන්න
     if (!userStr) {
       setPendingApplyJobId(jobId);
       setShowLoginModal(true);
       return;
     }
 
-    // User data parse කරන්න
     let user;
     try {
       user = JSON.parse(userStr);
@@ -85,7 +105,6 @@ function JobDetails({ id: modalId, isModal }) {
       return;
     }
 
-    // Case 2: Company user → Error Modal show කරන්න
     if (isCompanyUser(user)) {
       setErrorMessage(
         "Companies cannot apply for internships! Only students are eligible to apply for internship positions. Please log in with a student account to apply."
@@ -94,17 +113,15 @@ function JobDetails({ id: modalId, isModal }) {
       return;
     }
 
-    // Case 3: Student user → Apply page වෙත යන්න
     if (isStudentUser(user)) {
       navigate(`/apply?jobId=${jobId}`);
       return;
     }
 
-    // Case 4: Default → Apply page වෙත යන්න
     navigate(`/apply?jobId=${jobId}`);
   };
 
-  // ✅ Login Modal Close Handler
+  // ---------- LOGIN CLOSE ----------
   const handleLoginClose = () => {
     setShowLoginModal(false);
 
@@ -113,8 +130,6 @@ function JobDetails({ id: modalId, isModal }) {
     if (userStr && pendingApplyJobId) {
       try {
         const user = JSON.parse(userStr);
-
-        // Login කළ user company නම් → Error show කරන්න
         if (isCompanyUser(user)) {
           setErrorMessage(
             "You logged in as a Company! Companies cannot apply for internships. Please log in with a student account to apply."
@@ -123,8 +138,6 @@ function JobDetails({ id: modalId, isModal }) {
           setPendingApplyJobId(null);
           return;
         }
-
-        // Student නම් → Apply page redirect
         navigate(`/apply?jobId=${pendingApplyJobId}`);
       } catch (e) {
         console.error("Error parsing user:", e);
@@ -134,20 +147,23 @@ function JobDetails({ id: modalId, isModal }) {
     setPendingApplyJobId(null);
   };
 
-  // ─── Loading & Error States ───────────────────────────────────────────────
-
+  // ---------- LOADING & ERROR ----------
   if (loading)
     return (
-      <div className="details-state">
-        <div className="details-spinner" />
-        <p>Loading job details…</p>
+      <div className="djd-page">
+        <div className="details-state">
+          <div className="details-spinner" />
+          <p>Loading job details…</p>
+        </div>
       </div>
     );
 
   if (!job)
     return (
-      <div className="details-state details-state--error">
-        <p>Job not found</p>
+      <div className="djd-page">
+        <div className="details-state details-state--error">
+          <p>Job not found</p>
+        </div>
       </div>
     );
 
@@ -167,52 +183,24 @@ function JobDetails({ id: modalId, isModal }) {
           .filter(Boolean)
       : null;
 
+  // ---------- RENDER ----------
   return (
     <div className={`djd-page ${isModal ? "djd-page-modal" : ""}`}>
 
-      {/* ✅ LOGIN MODAL */}
+      {/* LOGIN MODAL */}
       {showLoginModal && (
-        <Login
-          initialMode="login"
-          onClose={handleLoginClose}
-        />
+        <Login initialMode="login" onClose={handleLoginClose} />
       )}
 
-      {/* ✅ ERROR MODAL - Company Users සඳහා */}
+      {/* ERROR MODAL */}
       {showErrorModal && (
-        <div
-          className="jd-error-overlay"
-          onClick={() => setShowErrorModal(false)}
-        >
-          <div
-            className="jd-error-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Error Icon */}
+        <div className="jd-error-overlay" onClick={() => setShowErrorModal(false)}>
+          <div className="jd-error-modal" onClick={(e) => e.stopPropagation()}>
             <div className="jd-error-icon">
-              <svg
-                width="60"
-                height="60"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#ef4444"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <line x1="15" y1="9" x2="9" y2="15" />
-                <line x1="9" y1="9" x2="15" y2="15" />
-              </svg>
+              <X size={60} stroke="#ef4444" strokeWidth={2} />
             </div>
-
-            {/* Title */}
             <h2 className="jd-error-title">Access Denied</h2>
-
-            {/* Message */}
             <p className="jd-error-message">{errorMessage}</p>
-
-            {/* Info Box */}
             <div className="jd-error-info-box">
               <div className="jd-error-info-row">
                 <span>🏢</span>
@@ -223,21 +211,14 @@ function JobDetails({ id: modalId, isModal }) {
                 <span>Student accounts can <strong>apply</strong> for internships</span>
               </div>
             </div>
-
-            {/* Buttons */}
             <div className="jd-error-buttons">
-              <button
-                className="jd-error-btn-close"
-                onClick={() => setShowErrorModal(false)}
-              >
+              <button className="jd-error-btn-close" onClick={() => setShowErrorModal(false)}>
                 Got it
               </button>
-
               <button
                 className="jd-error-btn-switch"
                 onClick={() => {
                   setShowErrorModal(false);
-                  // Company logout කර Student Login modal open කරන්න
                   localStorage.removeItem("user");
                   localStorage.removeItem("token");
                   setShowLoginModal(true);
@@ -254,7 +235,10 @@ function JobDetails({ id: modalId, isModal }) {
       {!isModal && (
         <div className="djd-topbar">
           <button className="djd-back-btn" onClick={() => navigate(-1)}>
-            ← Back
+            <ArrowLeft size={20} /> Back
+          </button>
+          <button className="djd-theme-toggle" onClick={toggleDarkMode}>
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
           </button>
         </div>
       )}
@@ -262,11 +246,9 @@ function JobDetails({ id: modalId, isModal }) {
       {/* HERO */}
       <div className="djd-hero">
         <div className="djd-hero-inner">
-
           <div className="djd-logo-box">
             {job.companyName?.charAt(0)?.toUpperCase() || "C"}
           </div>
-
           <div className="djd-hero-meta">
             <div className="djd-badges">
               <span className="djd-badge djd-badge--blue">{categoryLabel}</span>
@@ -278,28 +260,22 @@ function JobDetails({ id: modalId, isModal }) {
               <span>📍 {job.location || "Sri Lanka"}</span>
             </div>
           </div>
-
           <div className="djd-hero-actions">
-            {/* ✅ UPDATED Apply Button */}
-            <button
-              className="djd-btn-apply"
-              onClick={() => handleApplyClick(job._id)}
-            >
+            <button className="djd-btn-apply" onClick={() => handleApplyClick(job._id)}>
               Apply now
             </button>
-
             <button
               className={`djd-btn-save ${saved ? "djd-btn-save--active" : ""}`}
               onClick={() => setSaved(!saved)}
             >
+              {saved ? <Check size={18} /> : <Bookmark size={18} />}
               {saved ? "Saved" : "Save"}
             </button>
           </div>
-
         </div>
       </div>
 
-      {/* STATS */}
+      {/* STATS STRIP */}
       <div className="djd-stats-strip">
         <div className="djd-stats-inner">
           <div className="djd-stat">
@@ -324,19 +300,13 @@ function JobDetails({ id: modalId, isModal }) {
       {/* BODY */}
       <div className="djd-body">
         <div className="djd-content-grid">
-
           {/* LEFT */}
           <div className="djd-left">
-
-            {/* DESCRIPTION CARD */}
+            {/* DESCRIPTION */}
             <div className="djd-card">
               <div className="djd-section-label">Description</div>
-              <p className="djd-body-text">
-                {job.description || "No description"}
-              </p>
-              <div className="djd-section-label djd-section-label--mt">
-                Requirements
-              </div>
+              <p className="djd-body-text">{job.description || "No description"}</p>
+              <div className="djd-section-label djd-section-label--mt">Requirements</div>
               {requirementsList ? (
                 <ul className="djd-req-list">
                   {requirementsList.map((req, i) => (
@@ -351,11 +321,10 @@ function JobDetails({ id: modalId, isModal }) {
               )}
             </div>
 
-            {/* COMPANY DETAILS CARD */}
+            {/* COMPANY DETAILS */}
             <div className="djd-card company-card">
               <div className="djd-section-label">Company Details</div>
               <div className="company-details-grid">
-
                 <div className="company-detail-box">
                   <div className="company-icon">🏢</div>
                   <div>
@@ -363,7 +332,6 @@ function JobDetails({ id: modalId, isModal }) {
                     <p>{job.companyName || job.company?.username || "Not Provided"}</p>
                   </div>
                 </div>
-
                 <div className="company-detail-box">
                   <div className="company-icon">📍</div>
                   <div>
@@ -371,7 +339,6 @@ function JobDetails({ id: modalId, isModal }) {
                     <p>{job.address || job.company?.address || "Not Provided"}</p>
                   </div>
                 </div>
-
                 <div className="company-detail-box">
                   <div className="company-icon">📞</div>
                   <div>
@@ -379,7 +346,6 @@ function JobDetails({ id: modalId, isModal }) {
                     <p>{job.mobile || job.company?.mobile || "Not Provided"}</p>
                   </div>
                 </div>
-
                 <div className="company-detail-box">
                   <div className="company-icon">✉️</div>
                   <div>
@@ -387,7 +353,6 @@ function JobDetails({ id: modalId, isModal }) {
                     <p>{job.email || job.company?.email || "Not Provided"}</p>
                   </div>
                 </div>
-
                 <div className="company-detail-box">
                   <div className="company-icon">🏙️</div>
                   <div>
@@ -395,16 +360,13 @@ function JobDetails({ id: modalId, isModal }) {
                     <p>{job.district || job.company?.district || "Not Provided"}</p>
                   </div>
                 </div>
-
               </div>
             </div>
-
           </div>
 
           {/* RIGHT */}
           <div className="djd-right">
-
-            {/* JOB INFO CARD */}
+            {/* JOB INFO */}
             <div className="djd-card djd-info-card">
               <div className="djd-section-label">Job Information</div>
               <div className="djd-info-rows">
@@ -435,19 +397,13 @@ function JobDetails({ id: modalId, isModal }) {
             <div className="djd-apply-card">
               <h3>Ready to apply?</h3>
               <p>Submit your application now.</p>
-              {/* ✅ UPDATED Apply Button */}
-              <button
-                className="djd-apply-card-btn"
-                onClick={() => handleApplyClick(job._id)}
-              >
+              <button className="djd-apply-card-btn" onClick={() => handleApplyClick(job._id)}>
                 Apply now
               </button>
             </div>
-
           </div>
         </div>
       </div>
-
     </div>
   );
 }

@@ -1,45 +1,49 @@
 /* ============================================================
-   COMPANY DASHBOARD — Ultra‑Advanced UI
+   COMPANY DASHBOARD — Professional Green Theme
    Dark mode · Glassmorphism · Fully Responsive
    ============================================================ */
 
-/* ---------- Google Fonts (already imported in your project) ---------- */
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
 
 /* ============================================================
-   1.  THEME TOKENS (Light / Dark)
+   1.  THEME TOKENS (Light / Dark) — Green Palette
    ============================================================ */
 :root {
-  --violet: #6C5CE7;
-  --violet-strong: #5344D6;
-  --violet-soft: #A79BFF;
-  --teal: #00D2C6;
-  --teal-strong: #00A99E;
-  --coral: #FF6B6B;
-  --amber: #FFB020;
-  --pink: #FF6BCB;
-  --blue: #4A9EFF;
+  /* Primary greens — deeper, corporate */
+  --green: #1E7B4F;
+  --green-strong: #145A39;
+  --green-soft: #85C9A5;
+  --sage: #4A9E86;
+  --sage-strong: #2D7D6A;
 
-  --gradient-brand: linear-gradient(135deg, var(--violet) 0%, var(--teal) 100%);
-  --gradient-warm: linear-gradient(135deg, var(--coral) 0%, var(--amber) 100%);
-  --gradient-text: linear-gradient(135deg, var(--violet) 0%, var(--teal-strong) 100%);
+  /* Accent variants (still green based) */
+  --green-light: #A8D5BA;
+  --green-dark: #0F4A2E;
+
+  /* Gradients – all green */
+  --gradient-brand: linear-gradient(135deg, var(--green) 0%, var(--sage) 100%);
+  --gradient-warm: linear-gradient(135deg, var(--sage) 0%, var(--green-strong) 100%);
+  --gradient-text: linear-gradient(135deg, var(--green-strong) 0%, var(--sage-strong) 100%);
   --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 100%);
 
-  --bg: #F5F6FC;
+  /* Surfaces */
+  --bg: #F3F8F5;
   --bg-elevated: #FFFFFF;
   --surface: rgba(255, 255, 255, 0.72);
   --surface-strong: rgba(255, 255, 255, 0.92);
-  --surface-border: rgba(20, 22, 43, 0.08);
-  --surface-shadow: rgba(46, 41, 110, 0.10);
+  --surface-border: rgba(18, 38, 28, 0.08);
+  --surface-shadow: rgba(18, 60, 42, 0.10);
 
-  --text: #14162B;
-  --text-muted: #5B5F79;
-  --text-faint: #9497B8;
+  /* Text */
+  --text: #1A2E24;
+  --text-muted: #4B6B5A;
+  --text-faint: #8AA89A;
 
   --input-bg: #FFFFFF;
   --nav-bg: rgba(255, 255, 255, 0.78);
-  --grid-line: rgba(108, 92, 231, 0.06);
+  --grid-line: rgba(30, 123, 79, 0.06);
 
+  /* Fonts */
   --font-display: 'Space Grotesk', sans-serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -49,43 +53,47 @@
   --radius-lg: 24px;
   --radius-pill: 999px;
 
-  --shadow-soft: 0 8px 24px rgba(46, 41, 110, 0.08);
-  --shadow-lift: 0 16px 40px rgba(46, 41, 110, 0.16);
-  --shadow-glow: 0 0 0 1px rgba(108, 92, 231, 0.15), 0 12px 32px rgba(108, 92, 231, 0.22);
+  --shadow-soft: 0 8px 24px rgba(18, 60, 42, 0.08);
+  --shadow-lift: 0 16px 40px rgba(18, 60, 42, 0.16);
+  --shadow-glow: 0 0 0 1px rgba(30, 123, 79, 0.15), 0 12px 32px rgba(30, 123, 79, 0.22);
 
   --sidebar-width: 260px;
   --sidebar-collapsed: 72px;
   --header-height: 72px;
   --transition-speed: 0.3s;
+
+  color-scheme: light;
 }
 
 /* ----- Dark Mode ----- */
 .dashboard.dark {
-  --bg: #0A0C18;
-  --bg-elevated: #12142A;
+  --bg: #0B1A14;
+  --bg-elevated: #12261C;
   --surface: rgba(255, 255, 255, 0.05);
-  --surface-strong: rgba(22, 24, 46, 0.88);
+  --surface-strong: rgba(18, 38, 28, 0.88);
   --surface-border: rgba(255, 255, 255, 0.09);
   --surface-shadow: rgba(0, 0, 0, 0.45);
 
-  --text: #F2F3FA;
-  --text-muted: #A6A9C9;
-  --text-faint: #6E7194;
+  --text: #E8F5EE;
+  --text-muted: #A0C0B0;
+  --text-faint: #6B8F7A;
 
-  --input-bg: #171933;
-  --nav-bg: rgba(10, 12, 24, 0.72);
-  --grid-line: rgba(139, 124, 255, 0.08);
+  --input-bg: #1B3428;
+  --nav-bg: rgba(11, 26, 20, 0.72);
+  --grid-line: rgba(74, 158, 134, 0.08);
 
-  --violet: #8B7CFF;
-  --violet-strong: #A79BFF;
-  --teal: #2FE8DB;
-  --coral: #FF8A8A;
-  --amber: #FFC65C;
-  --pink: #FF8AD4;
+  /* Brighter greens for dark mode */
+  --green: #4CD98A;
+  --green-strong: #86E8AE;
+  --sage: #4FE0CB;
+  --green-light: #A8F0C8;
+  --green-dark: #2C8A5A;
 
   --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.35);
   --shadow-lift: 0 20px 48px rgba(0, 0, 0, 0.55);
-  --shadow-glow: 0 0 0 1px rgba(139, 124, 255, 0.25), 0 12px 36px rgba(139, 124, 255, 0.28);
+  --shadow-glow: 0 0 0 1px rgba(76, 217, 138, 0.25), 0 12px 36px rgba(76, 217, 138, 0.28);
+
+  color-scheme: dark;
 }
 
 /* ============================================================
@@ -126,7 +134,7 @@
   background: var(--bg);
 }
 .dashboard::-webkit-scrollbar-thumb {
-  background: var(--violet);
+  background: var(--green);
   border-radius: var(--radius-pill);
 }
 
@@ -213,7 +221,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 0 3px var(--violet-soft);
+  box-shadow: 0 0 0 3px var(--green-soft);
 }
 .profile-details h3 {
   font-size: 16px;
@@ -251,7 +259,7 @@
   box-shadow: var(--shadow-soft);
 }
 .mini-cardd svg {
-  color: var(--violet);
+  color: var(--green);
   width: 20px;
   height: 20px;
   margin-bottom: 4px;
@@ -303,11 +311,11 @@
   color: var(--text);
 }
 .theme-btn:hover {
-  border-color: var(--violet);
-  color: var(--violet);
+  border-color: var(--green);
+  color: var(--green);
 }
 .logout-btn {
-  background: var(--coral);
+  background: var(--green-strong);
   color: #fff;
   opacity: 0.8;
 }
@@ -395,7 +403,7 @@
   transition: all 0.2s;
 }
 .notification-btn:hover {
-  background: var(--violet-soft);
+  background: var(--green-soft);
   color: #fff;
 }
 
@@ -436,7 +444,7 @@
   border-radius: var(--radius-pill);
   font-size: 12px;
   font-weight: 700;
-  color: #fff;
+  color: #ac1010;
   letter-spacing: 0.04em;
   margin-bottom: 10px;
 }
@@ -519,7 +527,7 @@
   min-width: 180px;
 }
 .filter-dropdown:focus {
-  border-color: var(--violet);
+  border-color: var(--green);
 }
 .live-status {
   display: flex;
@@ -527,8 +535,8 @@
   gap: 8px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--teal-strong);
-  background: rgba(0,210,198,0.1);
+  color: var(--sage-strong);
+  background: rgba(74, 158, 134, 0.1);
   padding: 4px 16px;
   border-radius: var(--radius-pill);
 }
@@ -603,7 +611,7 @@
 .input-group input:focus,
 .input-group textarea:focus,
 .input-group select:focus {
-  border-color: var(--violet);
+  border-color: var(--green);
 }
 .input-group textarea {
   min-height: 100px;
@@ -650,8 +658,8 @@
   margin-top: 8px;
 }
 .cancel-btn:hover {
-  border-color: var(--coral);
-  color: var(--coral);
+  border-color: var(--green);
+  color: var(--green);
 }
 
 /* ----- Jobs Grid ----- */
@@ -679,8 +687,8 @@
   margin-bottom: 12px;
 }
 .job-category {
-  background: var(--violet-soft);
-  color: #372201;
+  background: var(--green-soft);
+  color: var(--green-dark);
   font-size: 11px;
   font-weight: 700;
   padding: 4px 14px;
@@ -701,7 +709,7 @@
   transition: all 0.2s;
 }
 .view-btn:hover {
-  background: var(--violet);
+  background: var(--green);
   color: #fff;
 }
 .job-card h2 {
@@ -769,14 +777,14 @@
   cursor: pointer;
 }
 .edit-btn {
-  background: var(--teal-strong);
+  background: var(--sage-strong);
   color: #fff;
 }
 .edit-btn:hover {
   transform: scale(1.1);
 }
 .delete-btn {
-  background: var(--coral);
+  background: var(--green-strong);
   color: #fff;
 }
 .delete-btn:hover {
@@ -850,13 +858,13 @@
   transition: 0.2s;
 }
 .close-modal:hover {
-  background: var(--coral);
+  background: var(--green);
   color: #fff;
 }
 .modal-category {
   display: inline-block;
-  background: var(--violet-soft);
-  color: var(--violet-strong);
+  background: var(--green-soft);
+  color: var(--green-strong);
   font-size: 12px;
   font-weight: 700;
   padding: 4px 14px;
@@ -1076,7 +1084,6 @@
 /* ============================================================
    11. SIDEBAR TOGGLE (hidden checkbox for mobile)
    ============================================================ */
-/* This checkbox is used with a <label> in JSX — we style it here */
 #sidebar-toggle-checkbox {
   display: none;
 }
@@ -1104,7 +1111,7 @@
   color: transparent;
 }
 .shimmer {
-  background: linear-gradient(90deg, var(--violet-soft) 25%, var(--teal) 50%, var(--violet-soft) 75%);
+  background: linear-gradient(90deg, var(--green-soft) 25%, var(--sage) 50%, var(--green-soft) 75%);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
