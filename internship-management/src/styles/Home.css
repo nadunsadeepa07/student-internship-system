@@ -2,7 +2,7 @@
    SIMS PORTAL — Home / Landing Page
    Same "Launch Deck" design system as InternshipSearch.css so the theme
    (and dark mode) stays in sync as students move between pages.
-   Violet → teal gradient core, coral/amber signal accents, glass panels
+   Green → sage gradient core, coral/amber signal accents, glass panels
    over an animated mesh field, scroll-reveal motion, blinking hero cursor.
    ========================================================================= */
 
@@ -12,32 +12,32 @@
    1. THEME TOKENS (identical system to InternshipSearch.css)
    ------------------------------------------------------------------------- */
 :root {
-  --violet: #6C5CE7;
-  --violet-strong: #5344D6;
-  --violet-soft: #A79BFF;
-  --teal: #00D2C6;
-  --teal-strong: #00A99E;
-  --coral: #FF6B6B;
-  --amber: #FFB020;
+  --green: #1F8A5F;
+  --green-strong: #146B47;
+  --green-soft: #86D9AE;
+  --sage: #3FB8A0;
+  --sage-strong: #1F9484;
+  --coral: #E2725B;
+  --amber: #E8A93B;
 
-  --gradient-brand: linear-gradient(135deg, var(--violet) 0%, var(--teal) 100%);
+  --gradient-brand: linear-gradient(135deg, var(--green) 0%, var(--sage) 100%);
   --gradient-warm: linear-gradient(135deg, var(--coral) 0%, var(--amber) 100%);
-  --gradient-text: linear-gradient(135deg, var(--violet) 0%, var(--teal-strong) 100%);
+  --gradient-text: linear-gradient(135deg, var(--green) 0%, var(--sage-strong) 100%);
 
-  --bg: #F5F6FC;
+  --bg: #F4FAF6;
   --bg-elevated: #FFFFFF;
   --surface: rgba(255, 255, 255, 0.72);
   --surface-strong: rgba(255, 255, 255, 0.92);
-  --surface-border: rgba(20, 22, 43, 0.08);
-  --surface-shadow: rgba(46, 41, 110, 0.10);
+  --surface-border: rgba(18, 38, 28, 0.08);
+  --surface-shadow: rgba(18, 60, 42, 0.10);
 
-  --text: #14162B;
-  --text-muted: #5B5F79;
-  --text-faint: #9497B8;
+  --text: #12261C;
+  --text-muted: #4E6459;
+  --text-faint: #94A79D;
 
   --input-bg: #FFFFFF;
   --nav-bg: rgba(255, 255, 255, 0.78);
-  --grid-line: rgba(108, 92, 231, 0.06);
+  --grid-line: rgba(31, 138, 95, 0.06);
 
   --font-display: 'Space Grotesk', sans-serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
@@ -48,38 +48,38 @@
   --radius-lg: 24px;
   --radius-pill: 999px;
 
-  --shadow-soft: 0 8px 24px rgba(46, 41, 110, 0.08);
-  --shadow-lift: 0 16px 40px rgba(46, 41, 110, 0.16);
-  --shadow-glow: 0 0 0 1px rgba(108, 92, 231, 0.15), 0 12px 32px rgba(108, 92, 231, 0.22);
+  --shadow-soft: 0 8px 24px rgba(18, 60, 42, 0.08);
+  --shadow-lift: 0 16px 40px rgba(18, 60, 42, 0.16);
+  --shadow-glow: 0 0 0 1px rgba(31, 138, 95, 0.15), 0 12px 32px rgba(31, 138, 95, 0.22);
 
   color-scheme: light;
 }
 
 html[data-theme='dark'] {
-  --bg: #0A0C18;
-  --bg-elevated: #12142A;
+  --bg: #081410;
+  --bg-elevated: #0F1F19;
   --surface: rgba(255, 255, 255, 0.05);
-  --surface-strong: rgba(22, 24, 46, 0.88);
+  --surface-strong: rgba(15, 31, 25, 0.88);
   --surface-border: rgba(255, 255, 255, 0.09);
   --surface-shadow: rgba(0, 0, 0, 0.45);
 
-  --text: #F2F3FA;
-  --text-muted: #A6A9C9;
-  --text-faint: #6E7194;
+  --text: #EAF7F0;
+  --text-muted: #9FBBAC;
+  --text-faint: #62806F;
 
-  --input-bg: #171933;
-  --nav-bg: rgba(10, 12, 24, 0.72);
-  --grid-line: rgba(139, 124, 255, 0.08);
+  --input-bg: #142A21;
+  --nav-bg: rgba(8, 20, 16, 0.72);
+  --grid-line: rgba(63, 184, 160, 0.08);
 
-  --violet: #8B7CFF;
-  --violet-strong: #A79BFF;
-  --teal: #2FE8DB;
-  --coral: #FF8A8A;
-  --amber: #FFC65C;
+  --green: #4CD98A;
+  --green-strong: #86E8AE;
+  --sage: #4FE0CB;
+  --coral: #F0937D;
+  --amber: #F5C56B;
 
   --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.35);
   --shadow-lift: 0 20px 48px rgba(0, 0, 0, 0.55);
-  --shadow-glow: 0 0 0 1px rgba(139, 124, 255, 0.25), 0 12px 36px rgba(139, 124, 255, 0.28);
+  --shadow-glow: 0 0 0 1px rgba(76, 217, 138, 0.25), 0 12px 36px rgba(76, 217, 138, 0.28);
 
   color-scheme: dark;
 }
@@ -124,7 +124,7 @@ html[data-theme='dark'] {
 }
 
 .home-page :focus-visible {
-  outline: 2px solid var(--violet);
+  outline: 2px solid var(--green);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
@@ -137,8 +137,8 @@ html[data-theme='dark'] {
   z-index: 0;
   pointer-events: none;
   background-image:
-    radial-gradient(circle 480px at 8% 0%, rgba(108, 92, 231, 0.14), transparent 70%),
-    radial-gradient(circle 460px at 96% 18%, rgba(0, 210, 198, 0.12), transparent 70%),
+    radial-gradient(circle 480px at 8% 0%, rgba(31, 138, 95, 0.14), transparent 70%),
+    radial-gradient(circle 460px at 96% 18%, rgba(63, 184, 160, 0.12), transparent 70%),
     linear-gradient(var(--grid-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: auto, auto, 48px 48px, 48px 48px;
@@ -274,7 +274,7 @@ html[data-theme='dark'] {
   border-radius: var(--radius-pill);
   background: var(--surface);
   border: 1px solid var(--surface-border);
-  color: var(--violet);
+  color: var(--green);
   transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
@@ -355,7 +355,7 @@ html[data-theme='dark'] {
 
 .lang-select:hover,
 .lang-select:focus {
-  border-color: var(--violet);
+  border-color: var(--green);
   outline: none;
 }
 
@@ -381,7 +381,7 @@ html[data-theme='dark'] {
   border-radius: var(--radius-pill);
   background: var(--surface);
   border: 1px solid var(--surface-border);
-  color: var(--violet);
+  color: var(--green);
   font-size: 12px;
   font-weight: 700;
   font-family: var(--font-mono);
@@ -407,7 +407,7 @@ html[data-theme='dark'] {
 
 .cursor {
   display: inline-block;
-  color: var(--violet);
+  color: var(--green);
   font-weight: 400;
   animation: blink 1s step-end infinite;
 }
@@ -506,8 +506,8 @@ html[data-theme='dark'] {
 }
 
 .hero-actions .secondary:hover {
-  border-color: var(--violet);
-  color: var(--violet);
+  border-color: var(--green);
+  color: var(--green);
   transform: translateY(-3px);
 }
 
@@ -605,7 +605,7 @@ html[data-theme='dark'] {
 .card:hover {
   transform: translateY(-6px);
   box-shadow: var(--shadow-lift);
-  border-color: rgba(108, 92, 231, 0.3);
+  border-color: rgba(31, 138, 95, 0.3);
 }
 
 .card h3 {
@@ -670,8 +670,8 @@ html[data-theme='dark'] {
   margin-top: 3px;
   font-size: 11px;
   font-weight: 700;
-  color: var(--teal-strong);
-  background: rgba(0, 210, 198, 0.12);
+  color: var(--sage-strong);
+  background: rgba(63, 184, 160, 0.12);
   padding: 2px 9px;
   border-radius: var(--radius-pill);
 }
@@ -738,7 +738,7 @@ html[data-theme='dark'] {
   padding: 14px 32px;
   border-radius: var(--radius-pill);
   background: #fff;
-  color: var(--violet-strong);
+  color: var(--green-strong);
   font-weight: 700;
   font-size: 15px;
   text-decoration: none;
@@ -812,7 +812,7 @@ html[data-theme='dark'] {
 .footer {
   margin-top: 20px;
   padding: 56px 48px 28px;
-  background: linear-gradient(180deg, transparent 0%, rgba(108, 92, 231, 0.06) 100%), var(--bg-elevated);
+  background: linear-gradient(180deg, transparent 0%, rgba(31, 138, 95, 0.06) 100%), var(--bg-elevated);
   border-top: 1px solid var(--surface-border);
 }
 
@@ -854,7 +854,7 @@ html[data-theme='dark'] {
 }
 
 .footer-grid a:hover {
-  color: var(--violet);
+  color: var(--green);
 }
 
 .footer-bottom {
@@ -878,7 +878,7 @@ html[data-theme='dark'] {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(10, 12, 24, 0.55);
+  background: rgba(8, 20, 16, 0.55);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   animation: fade-in 0.25s ease;
