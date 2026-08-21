@@ -93,7 +93,7 @@ html[data-theme='dark'] {
 }
 
 /* -------------------------------------------------------------------------
-   2. RESET & BASE (unchanged)
+   2. RESET & BASE
    ------------------------------------------------------------------------- */
 .home-page * {
   box-sizing: border-box;
@@ -324,7 +324,7 @@ html[data-theme='dark'] {
   width: 150px;
   height: 40px;
   border-radius: 50%;
-  background: var(--gradient-warm);   /* now a green gradient */
+  background: var(--gradient-warm);
   color: #fff;
   font-weight: 700;
   font-size: 15px;
@@ -364,7 +364,7 @@ html[data-theme='dark'] {
 }
 
 /* -------------------------------------------------------------------------
-   4. HERO
+   4. HERO — INCLUDING LAYOUT‑SHIFT FIX
    ------------------------------------------------------------------------- */
 .hero {
   padding: 96px 48px 72px;
@@ -394,12 +394,20 @@ html[data-theme='dark'] {
   box-shadow: var(--shadow-soft);
 }
 
+/* ----- FIX: stable height for the heading ----- */
 .hero-inner h1 {
   font-size: 48px;
   line-height: 1.12;
   font-weight: 700;
   margin-bottom: 20px;
-  min-height: 1.3em;
+
+  /* Prevent layout shift from typewriter */
+  min-height: 4.2rem;          /* ~67px – enough for the longest word */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.1em;
 }
 
 .hero-inner h1 span {
@@ -409,11 +417,15 @@ html[data-theme='dark'] {
   color: transparent;
 }
 
+/* ----- FIX: fixed cursor width to avoid horizontal jitter ----- */
 .cursor {
   display: inline-block;
   color: var(--green);
   font-weight: 400;
   animation: blink 1s step-end infinite;
+  width: 0.5em;               /* fixed width */
+  text-align: center;
+  flex-shrink: 0;
 }
 
 @keyframes blink {
@@ -681,7 +693,7 @@ html[data-theme='dark'] {
 }
 
 .testimonial-stars.modern-stars {
-  color: var(--green);          /* replaced amber with green */
+  color: var(--green);
   font-size: 14px;
   letter-spacing: 2px;
   margin-bottom: 12px;
@@ -927,13 +939,13 @@ html[data-theme='dark'] {
 }
 
 .close-btn:hover {
-  background: var(--green-strong); /* replaced coral with green */
+  background: var(--green-strong);
   color: #fff;
   transform: rotate(90deg);
 }
 
 /* -------------------------------------------------------------------------
-   13. RESPONSIVE (unchanged)
+   13. RESPONSIVE (with adjusted min‑height for smaller screens)
    ------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
   .stats {
@@ -983,6 +995,7 @@ html[data-theme='dark'] {
   }
   .hero-inner h1 {
     font-size: 32px;
+    min-height: 3.8rem;   /* ~60px on tablets */
   }
   .search-bar {
     flex-direction: column;
@@ -1031,6 +1044,7 @@ html[data-theme='dark'] {
 @media (max-width: 480px) {
   .hero-inner h1 {
     font-size: 28px;
+    min-height: 3.2rem;   /* ~50px on small phones */
   }
   .hero-actions {
     flex-direction: column;
