@@ -416,8 +416,31 @@ function Home() {
         <div className="hero-inner reveal">
           <p className="tag">{t.tag}</p>
           <h1>
-            {t.heroTitle} <span>{typed}</span>
-            <b className="cursor">|</b>
+            {t.heroTitle}{" "}
+            <span className="typed-wrap">
+              {/*
+                Invisible stack of every word in the current language's
+                typewriter list. CSS Grid overlaps them in the same cell,
+                so this box always sizes itself to the WIDEST word — before
+                a single character has been typed. That reserved size never
+                changes while typing, so nothing below the heading can shift.
+              */}
+              <span className="typed-ghost" aria-hidden="true">
+                {words.map((w) => (
+                  <span key={w}>{w}</span>
+                ))}
+              </span>
+              {/*
+                The actual animated text, absolutely positioned inside the
+                reserved box above. Its width changes every keystroke, but
+                because it's out of normal flow, that change never affects
+                surrounding layout.
+              */}
+              <span className="typed-live">
+                <span className="typed-text">{typed}</span>
+                <b className="cursor">|</b>
+              </span>
+            </span>
           </h1>
           <p>{t.heroDesc}</p>
           <form className="search-bar" onSubmit={handleSearch}>

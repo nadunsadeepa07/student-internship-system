@@ -125,7 +125,7 @@ html[data-theme='dark'] {
 }
 
 .home-page button {
-  font-family: var(--font-body);
+  font-family: #049f42;
   cursor: pointer;
   border: none;
   background: none;
@@ -364,7 +364,7 @@ html[data-theme='dark'] {
 }
 
 /* -------------------------------------------------------------------------
-   4. HERO — INCLUDING LAYOUT‑SHIFT FIX
+   4. HERO — WIDTH-RESERVED TYPEWRITER (no layout shift, desktop + mobile)
    ------------------------------------------------------------------------- */
 .hero {
   padding: 96px 48px 72px;
@@ -394,38 +394,74 @@ html[data-theme='dark'] {
   box-shadow: var(--shadow-soft);
 }
 
-/* ----- FIX: stable height for the heading ----- */
 .hero-inner h1 {
   font-size: 48px;
   line-height: 1.12;
   font-weight: 700;
   margin-bottom: 20px;
-
-  /* Prevent layout shift from typewriter */
-  min-height: 4.2rem;          /* ~67px – enough for the longest word */
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: center;
   flex-wrap: wrap;
   gap: 0.1em;
 }
 
-.hero-inner h1 span {
+/*
+  How this eliminates the layout shift:
+
+  1. `.typed-ghost` renders EVERY word from the current language's word
+     list at once, each one placed in the same CSS Grid cell
+     (grid-row: 1 / grid-column: 1). When multiple items share a grid
+     cell, the browser sizes that cell to fit the LARGEST one. So
+     `.typed-wrap` reserves exactly enough width for the widest word,
+     before a single character has been typed — and that reserved size
+     never changes for the rest of the animation.
+
+  2. `.typed-live` sits on top of that reserved box via
+     `position: absolute; inset: 0`, showing only the characters typed
+     so far plus the blinking cursor. Because it's taken out of normal
+     document flow, its width changing every keystroke can never push,
+     shrink, or wrap anything around it — on any screen size.
+*/
+.typed-wrap {
+  position: relative;
+  display: inline-grid;
+  vertical-align: baseline;
+}
+
+.typed-ghost {
+  visibility: hidden;
+  display: grid;
+  pointer-events: none;
+}
+
+.typed-ghost span {
+  grid-row: 1;
+  grid-column: 1;
+  white-space: nowrap;
+}
+
+.typed-live {
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+.typed-text {
   background: var(--gradient-text);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-/* ----- FIX: fixed cursor width to avoid horizontal jitter ----- */
 .cursor {
   display: inline-block;
+  margin-left: 2px;
   color: var(--green);
   font-weight: 400;
   animation: blink 1s step-end infinite;
-  width: 0.5em;               /* fixed width */
-  text-align: center;
-  flex-shrink: 0;
 }
 
 @keyframes blink {
@@ -738,13 +774,13 @@ html[data-theme='dark'] {
 }
 
 .cta h2 {
-  color: #fff;
+  color: #003c0f;
   font-size: 30px;
   margin-bottom: 12px;
 }
 
 .cta p {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(0, 0, 0, 0.919);
   font-size: 15px;
   margin-bottom: 28px;
 }
@@ -754,7 +790,7 @@ html[data-theme='dark'] {
   padding: 14px 32px;
   border-radius: var(--radius-pill);
   background: #fff;
-  color: var(--green-strong);
+  color: #015817;
   font-weight: 700;
   font-size: 15px;
   text-decoration: none;
@@ -945,7 +981,7 @@ html[data-theme='dark'] {
 }
 
 /* -------------------------------------------------------------------------
-   13. RESPONSIVE (with adjusted min‑height for smaller screens)
+   13. RESPONSIVE
    ------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
   .stats {
@@ -995,7 +1031,6 @@ html[data-theme='dark'] {
   }
   .hero-inner h1 {
     font-size: 32px;
-    min-height: 3.8rem;   /* ~60px on tablets */
   }
   .search-bar {
     flex-direction: column;
@@ -1044,7 +1079,6 @@ html[data-theme='dark'] {
 @media (max-width: 480px) {
   .hero-inner h1 {
     font-size: 28px;
-    min-height: 3.2rem;   /* ~50px on small phones */
   }
   .hero-actions {
     flex-direction: column;

@@ -294,7 +294,7 @@ html[data-theme='dark'] {
   padding: 10px 24px;
   border-radius: var(--radius-pill);
   background: var(--gradient-brand);
-  color: #fff;
+  color: #0e863c;
   font-weight: 600;
   font-size: 14px;
   box-shadow: var(--shadow-glow);
