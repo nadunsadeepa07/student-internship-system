@@ -1,48 +1,54 @@
 /* =========================================================================
-   SIMS PORTAL — Home / Landing Page
-   Same "Launch Deck" design system as InternshipSearch.css so the theme
-   (and dark mode) stays in sync as students move between pages.
-   Green → sage gradient core, coral/amber signal accents, glass panels
-   over an animated mesh field, scroll-reveal motion, blinking hero cursor.
+   SIMS PORTAL — Professional Green Theme
+   Replaces coral/amber accents with green/teal tones, deepens primary greens,
+   and uses a more subdued, corporate-friendly colour story.
    ========================================================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
 
 /* -------------------------------------------------------------------------
-   1. THEME TOKENS (identical system to InternshipSearch.css)
+   1. THEME TOKENS — Professional Green Palette
    ------------------------------------------------------------------------- */
 :root {
-  --green: #1F8A5F;
-  --green-strong: #146B47;
-  --green-soft: #86D9AE;
-  --sage: #3FB8A0;
-  --sage-strong: #1F9484;
-  --coral: #E2725B;
-  --amber: #E8A93B;
+  /* Primary greens — deeper, more corporate */
+  --green: #1E7B4F;
+  --green-strong: #145A39;
+  --green-soft: #85C9A5;
+  --sage: #4A9E86;          /* teal‑green for secondary accent */
+  --sage-strong: #2D7D6A;
 
+  /* Accents – still green, but lighter/darker variants */
+  --green-light: #A8D5BA;
+  --green-dark: #0F4A2E;
+
+  /* Gradients – now all green based */
   --gradient-brand: linear-gradient(135deg, var(--green) 0%, var(--sage) 100%);
-  --gradient-warm: linear-gradient(135deg, var(--coral) 0%, var(--amber) 100%);
-  --gradient-text: linear-gradient(135deg, var(--green) 0%, var(--sage-strong) 100%);
+  --gradient-warm: linear-gradient(135deg, var(--sage) 0%, var(--green-strong) 100%);
+  --gradient-text: linear-gradient(135deg, var(--green-strong) 0%, var(--sage-strong) 100%);
 
-  --bg: #F4FAF6;
+  /* Neutral surfaces */
+  --bg: #F3F8F5;
   --bg-elevated: #FFFFFF;
   --surface: rgba(255, 255, 255, 0.72);
   --surface-strong: rgba(255, 255, 255, 0.92);
   --surface-border: rgba(18, 38, 28, 0.08);
   --surface-shadow: rgba(18, 60, 42, 0.10);
 
-  --text: #12261C;
-  --text-muted: #4E6459;
-  --text-faint: #94A79D;
+  /* Text */
+  --text: #1A2E24;
+  --text-muted: #4B6B5A;
+  --text-faint: #8AA89A;
 
   --input-bg: #FFFFFF;
   --nav-bg: rgba(255, 255, 255, 0.78);
-  --grid-line: rgba(31, 138, 95, 0.06);
+  --grid-line: rgba(30, 123, 79, 0.06);
 
+  /* Typography */
   --font-display: 'Space Grotesk', sans-serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
+  /* Borders & shadows */
   --radius-sm: 10px;
   --radius-md: 16px;
   --radius-lg: 24px;
@@ -50,32 +56,34 @@
 
   --shadow-soft: 0 8px 24px rgba(18, 60, 42, 0.08);
   --shadow-lift: 0 16px 40px rgba(18, 60, 42, 0.16);
-  --shadow-glow: 0 0 0 1px rgba(31, 138, 95, 0.15), 0 12px 32px rgba(31, 138, 95, 0.22);
+  --shadow-glow: 0 0 0 1px rgba(30, 123, 79, 0.15), 0 12px 32px rgba(30, 123, 79, 0.22);
 
   color-scheme: light;
 }
 
 html[data-theme='dark'] {
-  --bg: #081410;
-  --bg-elevated: #0F1F19;
+  /* Dark mode with same green base, but inverted surfaces */
+  --bg: #0B1A14;
+  --bg-elevated: #12261C;
   --surface: rgba(255, 255, 255, 0.05);
-  --surface-strong: rgba(15, 31, 25, 0.88);
+  --surface-strong: rgba(18, 38, 28, 0.88);
   --surface-border: rgba(255, 255, 255, 0.09);
   --surface-shadow: rgba(0, 0, 0, 0.45);
 
-  --text: #EAF7F0;
-  --text-muted: #9FBBAC;
-  --text-faint: #62806F;
+  --text: #E8F5EE;
+  --text-muted: #A0C0B0;
+  --text-faint: #6B8F7A;
 
-  --input-bg: #142A21;
-  --nav-bg: rgba(8, 20, 16, 0.72);
-  --grid-line: rgba(63, 184, 160, 0.08);
+  --input-bg: #1B3428;
+  --nav-bg: rgba(11, 26, 20, 0.72);
+  --grid-line: rgba(74, 158, 134, 0.08);
 
+  /* Brighter greens for dark mode visibility */
   --green: #4CD98A;
   --green-strong: #86E8AE;
   --sage: #4FE0CB;
-  --coral: #F0937D;
-  --amber: #F5C56B;
+  --green-light: #A8F0C8;
+  --green-dark: #2C8A5A;
 
   --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.35);
   --shadow-lift: 0 20px 48px rgba(0, 0, 0, 0.55);
@@ -85,7 +93,7 @@ html[data-theme='dark'] {
 }
 
 /* -------------------------------------------------------------------------
-   2. RESET & BASE
+   2. RESET & BASE (unchanged)
    ------------------------------------------------------------------------- */
 .home-page * {
   box-sizing: border-box;
@@ -129,7 +137,7 @@ html[data-theme='dark'] {
   border-radius: var(--radius-sm);
 }
 
-/* Ambient background grid, echoing the search page */
+/* Ambient background grid */
 .home-page::before {
   content: "";
   position: fixed;
@@ -137,8 +145,8 @@ html[data-theme='dark'] {
   z-index: 0;
   pointer-events: none;
   background-image:
-    radial-gradient(circle 480px at 8% 0%, rgba(31, 138, 95, 0.14), transparent 70%),
-    radial-gradient(circle 460px at 96% 18%, rgba(63, 184, 160, 0.12), transparent 70%),
+    radial-gradient(circle 480px at 8% 0%, rgba(30, 123, 79, 0.10), transparent 70%),
+    radial-gradient(circle 460px at 96% 18%, rgba(74, 158, 134, 0.10), transparent 70%),
     linear-gradient(var(--grid-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: auto, auto, 48px 48px, 48px 48px;
@@ -151,7 +159,6 @@ html[data-theme='dark'] {
   z-index: 1;
 }
 
-/* Scroll-reveal utility */
 .reveal {
   opacity: 0;
   transform: translateY(24px);
@@ -214,7 +221,6 @@ html[data-theme='dark'] {
   color: transparent;
 }
 
-/* ---- Mobile menu toggle ---- */
 .mobile-menu-toggle {
   display: none;
   background: none;
@@ -264,7 +270,6 @@ html[data-theme='dark'] {
   width: 100%;
 }
 
-/* Dark mode toggle (shared pattern with InternshipSearch.css) */
 .theme-togglee-btn {
   display: flex;
   align-items: center;
@@ -279,7 +284,7 @@ html[data-theme='dark'] {
 }
 
 .theme-togglee-btn:hover {
-  transform: translateY(-2px) ;
+  transform: translateY(-2px);
   box-shadow: var(--shadow-glow);
 }
 
@@ -319,7 +324,7 @@ html[data-theme='dark'] {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--gradient-warm);
+  background: var(--gradient-warm);   /* now a green gradient */
   color: #fff;
   font-weight: 700;
   font-size: 15px;
@@ -332,7 +337,6 @@ html[data-theme='dark'] {
   box-shadow: var(--shadow-glow);
 }
 
-/* Language select — pulled out of inline styles so it themes correctly */
 .lang-select {
   padding: 10px 32px 10px 14px;
   border-radius: var(--radius-pill);
@@ -605,7 +609,7 @@ html[data-theme='dark'] {
 .card:hover {
   transform: translateY(-6px);
   box-shadow: var(--shadow-lift);
-  border-color: rgba(31, 138, 95, 0.3);
+  border-color: rgba(30, 123, 79, 0.3);
 }
 
 .card h3 {
@@ -671,13 +675,13 @@ html[data-theme='dark'] {
   font-size: 11px;
   font-weight: 700;
   color: var(--sage-strong);
-  background: rgba(63, 184, 160, 0.12);
+  background: rgba(74, 158, 134, 0.12);
   padding: 2px 9px;
   border-radius: var(--radius-pill);
 }
 
 .testimonial-stars.modern-stars {
-  color: var(--amber);
+  color: var(--green);          /* replaced amber with green */
   font-size: 14px;
   letter-spacing: 2px;
   margin-bottom: 12px;
@@ -812,7 +816,7 @@ html[data-theme='dark'] {
 .footer {
   margin-top: 20px;
   padding: 56px 48px 28px;
-  background: linear-gradient(180deg, transparent 0%, rgba(31, 138, 95, 0.06) 100%), var(--bg-elevated);
+  background: linear-gradient(180deg, transparent 0%, rgba(30, 123, 79, 0.06) 100%), var(--bg-elevated);
   border-top: 1px solid var(--surface-border);
 }
 
@@ -923,15 +927,14 @@ html[data-theme='dark'] {
 }
 
 .close-btn:hover {
-  background: var(--coral);
+  background: var(--green-strong); /* replaced coral with green */
   color: #fff;
   transform: rotate(90deg);
 }
 
 /* -------------------------------------------------------------------------
-   13. RESPONSIVE
+   13. RESPONSIVE (unchanged)
    ------------------------------------------------------------------------- */
-/* ---- Tablets & small laptops ---- */
 @media (max-width: 1024px) {
   .stats {
     grid-template-columns: repeat(2, 1fr);
@@ -945,9 +948,7 @@ html[data-theme='dark'] {
   }
 }
 
-/* ---- Mobile phones ---- */
 @media (max-width: 768px) {
-  /* Show hamburger, hide desktop links by default */
   .mobile-menu-toggle {
     display: block;
   }
@@ -977,7 +978,6 @@ html[data-theme='dark'] {
     margin: 0 auto;
   }
 
-  /* Hero */
   .hero {
     padding: 48px 16px 40px;
   }
@@ -993,13 +993,11 @@ html[data-theme='dark'] {
     width: 100%;
   }
 
-  /* Stats */
   .stats {
     padding: 0 16px 40px;
     grid-template-columns: 1fr 1fr;
   }
 
-  /* Sections */
   .section {
     padding: 40px 16px;
   }
@@ -1008,7 +1006,6 @@ html[data-theme='dark'] {
     grid-template-columns: 1fr;
   }
 
-  /* CTA */
   .cta {
     margin: 20px 16px 56px;
     padding: 40px 20px;
@@ -1017,7 +1014,6 @@ html[data-theme='dark'] {
     font-size: 26px;
   }
 
-  /* Footer */
   .footer {
     padding: 40px 16px 20px;
   }
@@ -1026,14 +1022,12 @@ html[data-theme='dark'] {
     gap: 28px;
   }
 
-  /* Modal */
   .auth-modal {
     padding: 24px 16px;
     margin: 10px;
   }
 }
 
-/* ---- Small phones ---- */
 @media (max-width: 480px) {
   .hero-inner h1 {
     font-size: 28px;
@@ -1076,6 +1070,7 @@ html[data-theme='dark'] {
     padding: 14px 16px;
   }
 }
+
 /* -------------------------------------------------------------------------
    14. ACCESSIBILITY
    ------------------------------------------------------------------------- */
@@ -1087,7 +1082,6 @@ html[data-theme='dark'] {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
-
   .reveal {
     opacity: 1;
     transform: none;
